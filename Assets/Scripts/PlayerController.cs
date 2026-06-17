@@ -10,9 +10,13 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 10.0f;
     public float gravity = -9.81f;
 
+    [Header("Run Toggle (bật/tắt chạy)")]
+    public KeyCode runToggleKey = KeyCode.LeftShift; // Ấn 1 lần để bật/tắt chạy (KHÔNG cần giữ)
+    private bool isRunning = false;                  // Trạng thái chạy hiện tại
+
     // THÊM MỚI: Biến lưu trữ Camera
     [Header("Camera Info")]
-    public Transform mainCamera; 
+    public Transform mainCamera;
 
     private CharacterController controller;
     private Animator animator;
@@ -29,7 +33,6 @@ public class PlayerController : MonoBehaviour
             mainCamera = Camera.main.transform;
         }
 
-        // Tùy chọn: Khóa con trỏ chuột vào giữa màn hình để xoay camera mượt hơn
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -40,7 +43,11 @@ public class PlayerController : MonoBehaviour
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        // Ấn phím 1 lần để BẬT/TẮT chạy (toggle), không cần giữ liên tục
+        if (Input.GetKeyDown(runToggleKey))
+        {
+            isRunning = !isRunning;
+        }
         float currentSpeed = isRunning ? runSpeed : walkSpeed;
 
         if (direction.magnitude >= 0.1f)
@@ -48,11 +55,9 @@ public class PlayerController : MonoBehaviour
             // THAY ĐỔI QUAN TRỌNG: Cộng thêm góc xoay của Camera (mainCamera.eulerAngles.y)
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.eulerAngles.y;
             
-            // Xoay nhân vật
             Quaternion rotation = Quaternion.Euler(0f, targetAngle, 0f);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
 
-            // Di chuyển nhân vật
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
         }
@@ -67,5 +72,11 @@ public class PlayerController : MonoBehaviour
         
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    // Gọi từ nút UI "Chạy" (sự kiện OnClick) để bật/tắt chạy bằng chuột/cảm ứng
+    public void ToggleRun()
+    {
+        isRunning = !isRunning;
     }
 }
