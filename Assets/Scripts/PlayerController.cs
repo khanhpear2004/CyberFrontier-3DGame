@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 10.0f;
     public float gravity = -9.81f;
 
+    [Header("Aim Mode (chế độ ngắm bắn)")]
+    public float aimTurnSpeed = 200f;                // Độ nhạy xoay nhân vật bằng chuột khi ngắm
+    [HideInInspector] public bool isAiming = false;  // PlayerAimShooter bật/tắt qua SetAiming()
+
     [Header("Fly Toggle (bật/tắt bay lơ lửng)")]
     public KeyCode flyToggleKey = KeyCode.LeftShift;
     private bool isFlying = false;
@@ -83,7 +87,6 @@ public class PlayerController : MonoBehaviour
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
         if (Input.GetKeyDown(flyToggleKey))
         {
@@ -93,14 +96,30 @@ public class PlayerController : MonoBehaviour
 
         float currentSpeed = isFlying ? flySpeed : walkSpeed;
 
+        // 2 chế độ điều khiển khác nhau
+        if (isAiming)
+            HandleAimMovement(horizontal, vertical, currentSpeed);
+        else
+            HandleFreeMovement(horizontal, vertical, currentSpeed);
+
+        // Trọng lực (dùng chung cho cả 2 chế độ)
+        if (controller.isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+    }
+
+    // CHẾ ĐỘ THƯỜNG: nhân vật tự xoay theo HƯỚNG DI CHUYỂN (camera-relative) — như cũ
+    private void HandleFreeMovement(float horizontal, float vertical, float currentSpeed)
+    {
+        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
         if (direction.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-
-            if (mainCamera != null)
-            {
-                targetAngle += mainCamera.eulerAngles.y;
-            }
+            if (mainCamera != null) targetAngle += mainCamera.eulerAngles.y;
 
             Quaternion rotation = Quaternion.Euler(0f, targetAngle, 0f);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
@@ -111,14 +130,31 @@ public class PlayerController : MonoBehaviour
 
         float speedPercent = direction.magnitude == 0 ? 0f : (isFlying ? 1f : 0.5f);
         animator.SetFloat("Speed", speedPercent, 0.1f, Time.deltaTime);
+    }
 
-        if (controller.isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
+    // CHẾ ĐỘ NGẮM: CHUỘT xoay nhân vật (= ngắm), WASD đi ngang/tiến/lùi theo hướng đang ngắm (strafe)
+    private void HandleAimMovement(float horizontal, float vertical, float currentSpeed)
+    {
+        // Chuột trái/phải -> xoay nhân vật, camera (sau lưng) tự xoay theo
+        float mouseX = Input.GetAxis("Mouse X");
+        transform.Rotate(0f, mouseX * aimTurnSpeed * Time.deltaTime, 0f);
 
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+        // WASD strafe theo hướng đang ngắm, KHÔNG tự xoay nhân vật
+        Vector3 moveDir = transform.right * horizontal + transform.forward * vertical;
+        if (moveDir.magnitude > 0.1f)
+            controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
+
+        float speedPercent = moveDir.magnitude < 0.1f ? 0f : 0.5f;
+        animator.SetFloat("Speed", speedPercent, 0.1f, Time.deltaTime);
+    }
+
+    // PlayerAimShooter gọi khi vào/ra chế độ ngắm.
+    // Khi VÀO ngắm: quay nhân vật về đúng hướng camera đang nhìn -> AimCamera khớp liền mạch, không mất người.
+    public void SetAiming(bool aiming)
+    {
+        isAiming = aiming;
+        if (aiming && mainCamera != null)
+            transform.rotation = Quaternion.Euler(0f, mainCamera.eulerAngles.y, 0f);
     }
 
     private void HandleCameraZoom()

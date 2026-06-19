@@ -7,5 +7,6 @@ public class SkillContext
 {
     public Animator animator;     // Animator của nhân vật (để bật/tắt tư thế chiêu)
     public Transform player;      // Transform người chơi (spawn VFX, xác định hướng...)
+    public PlayerEnergy energy;   // Năng lượng người chơi (chiêu tốn năng lượng dùng tới)
     public MonoBehaviour runner;  // Đối tượng chạy Coroutine (chính là nút skill)
 }

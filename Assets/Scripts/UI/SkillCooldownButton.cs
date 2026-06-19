@@ -15,6 +15,7 @@ public class SkillCooldownButton : MonoBehaviour, IPointerClickHandler
     [Header("Tham chiếu nhân vật")]
     public Animator playerAnimator;   // Animator của CyberSoldier (để trống sẽ tự tìm)
     public Transform player;          // Transform người chơi (tùy chọn)
+    public PlayerEnergy energy;       // Thanh năng lượng (để trống sẽ tự tìm)
 
     [Header("Phím tắt")]
     public KeyCode activationKey = KeyCode.Q;
@@ -38,6 +39,8 @@ public class SkillCooldownButton : MonoBehaviour, IPointerClickHandler
             var pc = FindFirstObjectByType<PlayerController>();
             if (pc != null) playerAnimator = pc.GetComponent<Animator>();
         }
+
+        if (energy == null) energy = FindFirstObjectByType<PlayerEnergy>();
 
         RefreshIcon();
     }
@@ -64,16 +67,23 @@ public class SkillCooldownButton : MonoBehaviour, IPointerClickHandler
     public void TryUse()
     {
         if (skill == null || !IsReady) return;
+
+        // Chiêu tốn năng lượng: phải đủ mới bắn được (không đủ -> bỏ qua, không spam được)
+        if (skill.energyCost > 0f && (energy == null || !energy.HasEnough(skill.energyCost))) return;
+
         StartCoroutine(RunSkill());
     }
 
-    // Chạy chiêu: bắt đầu hồi ngay khi tung, rồi thực thi nội dung chiêu
+    // Chạy chiêu: trừ năng lượng + bắt đầu hồi ngay khi tung, rồi thực thi nội dung chiêu
     private IEnumerator RunSkill()
     {
         isCasting = true;
         cooldownRemaining = skill.cooldownDuration;
 
-        var ctx = new SkillContext { animator = playerAnimator, player = player, runner = this };
+        if (skill.energyCost > 0f && energy != null)
+            energy.TrySpend(skill.energyCost);
+
+        var ctx = new SkillContext { animator = playerAnimator, player = player, energy = energy, runner = this };
         yield return StartCoroutine(skill.Execute(ctx));
 
         isCasting = false;
