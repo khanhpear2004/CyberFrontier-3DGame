@@ -19,11 +19,15 @@ public class PlayerController : MonoBehaviour
     public Transform mainCamera;
 
     [Header("Camera Zoom Settings (Cinemachine 3.x)")]
-    // Đã đổi kiểu dữ liệu thành CinemachineCamera (mới)
     public CinemachineCamera cinemachineCamera;
     public float zoomSpeed = 5f;
     public float minZoom = 2f;
     public float maxZoom = 12f;
+
+    [Header("Zoom cho FreeLook / Orbital Follow (hệ số nhân khoảng cách)")]
+    public float orbitalZoomSpeed = 3f;     // Tốc độ zoom khi lăn chuột
+    public float minZoomMultiplier = 0.4f;  // Gần nhất (×0.4 khoảng cách gốc)
+    public float maxZoomMultiplier = 1.2f;  // Xa nhất (×1.2 khoảng cách gốc)
 
     [Header("Thruster VFX (Hiệu ứng hạt phản lực)")]
     public ParticleSystem leftThruster;
@@ -33,10 +37,9 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Vector3 velocity;
 
-    // Component điều khiển khoảng cách của Cinemachine 3.x
     private CinemachineThirdPersonFollow thirdPersonFollow;
-    // Component Position Composer thay thế cho Framing Transposer cũ
     private CinemachinePositionComposer positionComposer;
+    private CinemachineOrbitalFollow orbitalFollow;
 
     void Start()
     {
@@ -54,6 +57,14 @@ public class PlayerController : MonoBehaviour
             // Cinemachine 3.x sử dụng TryGetComponent để lấy các Behaviour
             cinemachineCamera.TryGetComponent(out thirdPersonFollow);
             cinemachineCamera.TryGetComponent(out positionComposer);
+            cinemachineCamera.TryGetComponent(out orbitalFollow);
+
+            // FreeLook/Orbital: mặc định RadialAxis bị khoá ở (1,1) -> mở range cho phép zoom
+            if (orbitalFollow != null)
+            {
+                orbitalFollow.RadialAxis.Range = new Vector2(minZoomMultiplier, maxZoomMultiplier);
+                orbitalFollow.RadialAxis.Value = Mathf.Clamp(1f, minZoomMultiplier, maxZoomMultiplier);
+            }
         }
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -127,6 +138,13 @@ public class PlayerController : MonoBehaviour
             {
                 positionComposer.CameraDistance -= scrollInput * zoomSpeed;
                 positionComposer.CameraDistance = Mathf.Clamp(positionComposer.CameraDistance, minZoom, maxZoom);
+            }
+            // Xử lý zoom cho FreeLook / Orbital Follow (camera hiện tại của bạn)
+            else if (orbitalFollow != null)
+            {
+                // RadialAxis.Value là HỆ SỐ NHÂN khoảng cách: nhỏ = gần, lớn = xa
+                float v = orbitalFollow.RadialAxis.Value - scrollInput * orbitalZoomSpeed;
+                orbitalFollow.RadialAxis.Value = Mathf.Clamp(v, minZoomMultiplier, maxZoomMultiplier);
             }
         }
     }

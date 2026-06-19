@@ -20680,9 +20680,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81a904beb726e6846a7071e9231930f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillName: Skill
+  skill: {fileID: 0}
+  playerAnimator: {fileID: 0}
+  player: {fileID: 0}
   activationKey: 101
-  cooldownDuration: 0
+  iconImage: {fileID: 0}
   cooldownOverlay: {fileID: 0}
   cooldownText: {fileID: 0}
 --- !u!1001 &313035262
@@ -67585,8 +67587,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 718736228}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2098553, y: 0, z: 0, w: 0.9777325}
-  m_LocalPosition: {x: -0.028279424, y: 2.225, z: -12.72564}
+  m_LocalRotation: {x: 0.07088899, y: -1.7671603e-15, z: 1.2558817e-16, w: 0.9974842}
+  m_LocalPosition: {x: -0.028279424, y: 1.096, z: -11.22564}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -79491,12 +79493,24 @@ PrefabInstance:
       value: CyberSoldier
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.2292794
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.419
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
       propertyPath: m_LocalPosition.z
@@ -79530,6 +79544,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: cf3910b7639e12447827e45f63f60201, type: 3}
       propertyPath: m_Controller
       value: 
@@ -79544,6 +79562,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
       insertIndex: -1
       addedObject: {fileID: 872850589}
+    - targetCorrespondingSourceObject: {fileID: 400006, guid: cf3910b7639e12447827e45f63f60201, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1687470055}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 100004, guid: cf3910b7639e12447827e45f63f60201, type: 3}
       insertIndex: -1
@@ -89926,11 +89947,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 2
-  runSpeed: 5
+  flySpeed: 5
   rotationSpeed: 10
   gravity: -9.81
-  runToggleKey: 122
+  flyToggleKey: 304
   mainCamera: {fileID: 718736231}
+  cinemachineCamera: {fileID: 0}
+  zoomSpeed: 5
+  minZoom: 2
+  maxZoom: 12
+  leftThruster: {fileID: 0}
+  rightThruster: {fileID: 0}
 --- !u!143 &1085482628
 CharacterController:
   m_ObjectHideFlags: 0
@@ -89956,6 +89983,11 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!95 &1085482629 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: cf3910b7639e12447827e45f63f60201, type: 3}
+  m_PrefabInstance: {fileID: 948597765}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1086842368
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -108088,8 +108120,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1377117858}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2098553, y: 0, z: 0, w: 0.9777325}
-  m_LocalPosition: {x: -0.028279424, y: 2.225, z: -12.72564}
+  m_LocalRotation: {x: 0.070888996, y: -1.7510972e-15, z: -1.0043878e-16, w: 0.9974842}
+  m_LocalPosition: {x: -0.028279424, y: 1.096, z: -11.22564}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -108222,14 +108254,14 @@ MonoBehaviour:
   Radius: 5
   Orbits:
     Top:
-      Radius: 7
-      Height: 5
-    Center:
-      Radius: 5
-      Height: 2.25
-    Bottom:
       Radius: 4
-      Height: 0.1
+      Height: 3
+    Center:
+      Radius: 3.5
+      Height: 0.5
+    Bottom:
+      Radius: 3
+      Height: -1.5
     SplineCurvature: 0.5
   RecenteringTarget: 2
   HorizontalAxis:
@@ -108282,7 +108314,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 948597766}
+    TrackingTarget: {fileID: 1687470055}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -127546,9 +127578,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81a904beb726e6846a7071e9231930f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillName: Skill
+  skill: {fileID: 0}
+  playerAnimator: {fileID: 1085482629}
+  player: {fileID: 948597766}
   activationKey: 113
-  cooldownDuration: 0
+  iconImage: {fileID: 0}
   cooldownOverlay: {fileID: 0}
   cooldownText: {fileID: 0}
 --- !u!1001 &1543569432
@@ -138611,6 +138645,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8168955876952026586, guid: 94185ee4782fde1489b9b705a628c39c, type: 3}
   m_PrefabInstance: {fileID: 8168955876339761914}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1687470054
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1687470055}
+  m_Layer: 0
+  m_Name: CyberSoldierCameraTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1687470055
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687470054}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 948597766}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1688635232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -156813,9 +156878,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81a904beb726e6846a7071e9231930f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillName: Skill
+  skill: {fileID: 0}
+  playerAnimator: {fileID: 0}
+  player: {fileID: 0}
   activationKey: 114
-  cooldownDuration: 0
+  iconImage: {fileID: 0}
   cooldownOverlay: {fileID: 0}
   cooldownText: {fileID: 0}
 --- !u!1001 &1947544889

@@ -1,32 +1,51 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems; // cho IPointerClickHandler (nhận click chuột)
 using TMPro;
 
-// Một nút chiêu thức kiểu ZZZ: dùng HỒI CHIÊU (cooldown) thay vì giới hạn đạn.
-// LIÊN KẾT phím tắt + click chuột: cả hai đều gọi chung TryUse().
+// Nút chiêu kiểu ZZZ: dùng HỒI CHIÊU (cooldown), không giới hạn đạn.
+// Phím tắt + click chuột đều gọi chung TryUse().
+// Chiêu được NẠP từ một SkillSO -> đổi chiêu (nhặt lõi mới) chỉ cần gọi SetSkill().
 public class SkillCooldownButton : MonoBehaviour, IPointerClickHandler
 {
-    [Header("Thông tin chiêu")]
-    public string skillName = "Skill";
-    public KeyCode activationKey = KeyCode.Q;   // Phím tắt kích hoạt
-    public float cooldownDuration = 5f;          // Thời gian hồi (giây)
+    [Header("Chiêu hiện tại (kéo asset SkillSO vào, vd: BeamSkill)")]
+    public SkillSO skill;
+
+    [Header("Tham chiếu nhân vật")]
+    public Animator playerAnimator;   // Animator của CyberSoldier (để trống sẽ tự tìm)
+    public Transform player;          // Transform người chơi (tùy chọn)
+
+    [Header("Phím tắt")]
+    public KeyCode activationKey = KeyCode.Q;
 
     [Header("Tham chiếu UI")]
-    public Image cooldownOverlay;   // Lớp tối phủ icon (Image Type = Filled, Radial 360)
-    public TMP_Text cooldownText;   // Số giây còn lại (tùy chọn)
+    public Image iconImage;           // Icon chiêu (tự cập nhật theo skill, tùy chọn)
+    public Image cooldownOverlay;     // Lớp tối phủ icon (Image Type = Filled, Radial 360)
+    public TMP_Text cooldownText;     // Số giây còn lại (tùy chọn)
 
     private float cooldownRemaining = 0f;
+    private bool isCasting = false;   // Đang chạy chiêu kéo dài -> chặn bấm chồng
 
-    public bool IsReady => cooldownRemaining <= 0f;
+    // Chỉ dùng được khi: đã hồi xong VÀ không đang trong lúc tung chiêu
+    public bool IsReady => cooldownRemaining <= 0f && !isCasting;
+
+    void Start()
+    {
+        // Nếu quên gán Animator, tự tìm trên nhân vật có PlayerController
+        if (playerAnimator == null)
+        {
+            var pc = FindFirstObjectByType<PlayerController>();
+            if (pc != null) playerAnimator = pc.GetComponent<Animator>();
+        }
+
+        RefreshIcon();
+    }
 
     void Update()
     {
         // (1) Bàn phím: ấn phím tắt
-        if (Input.GetKeyDown(activationKey))
-        {
-            TryUse();
-        }
+        if (Input.GetKeyDown(activationKey)) TryUse();
 
         // Đếm ngược thời gian hồi
         if (cooldownRemaining > 0f)
@@ -39,40 +58,61 @@ public class SkillCooldownButton : MonoBehaviour, IPointerClickHandler
     }
 
     // (2) Click chuột vào nút trên UI -> cũng gọi chung TryUse()
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        TryUse();
-    }
+    public void OnPointerClick(PointerEventData eventData) => TryUse();
 
-    // Dùng chung cho cả PHÍM lẫn CLICK: chỉ kích hoạt nếu đã hồi xong
+    // Dùng chung cho cả PHÍM lẫn CLICK: chỉ kích hoạt nếu có chiêu và đã sẵn sàng
     public void TryUse()
     {
-        if (!IsReady) return;
-        Activate();
+        if (skill == null || !IsReady) return;
+        StartCoroutine(RunSkill());
     }
 
-    // Kích hoạt chiêu + bắt đầu hồi
-    public void Activate()
+    // Chạy chiêu: bắt đầu hồi ngay khi tung, rồi thực thi nội dung chiêu
+    private IEnumerator RunSkill()
     {
-        cooldownRemaining = cooldownDuration;
-        Debug.Log("Dùng chiêu: " + skillName);
-        // TODO: gọi hiệu ứng / sát thương / animation của chiêu ở đây
+        isCasting = true;
+        cooldownRemaining = skill.cooldownDuration;
+
+        var ctx = new SkillContext { animator = playerAnimator, player = player, runner = this };
+        yield return StartCoroutine(skill.Execute(ctx));
+
+        isCasting = false;
+    }
+
+    // === Gọi hàm này khi NHẶT LÕI MỚI để đổi sang chiêu khác ===
+    public void SetSkill(SkillSO newSkill)
+    {
+        skill = newSkill;
+        cooldownRemaining = 0f;
+        isCasting = false;
+        RefreshIcon();
+    }
+
+    void RefreshIcon()
+    {
+        if (iconImage != null && skill != null && skill.icon != null)
+            iconImage.sprite = skill.icon;
     }
 
     // Cập nhật hiển thị hồi chiêu
     void UpdateVisual()
     {
+        float cd = (skill != null) ? skill.cooldownDuration : 1f;
+
         if (cooldownOverlay != null)
-        {
-            cooldownOverlay.fillAmount =
-                (cooldownDuration > 0f) ? cooldownRemaining / cooldownDuration : 0f;
-        }
+            cooldownOverlay.fillAmount = (cd > 0f) ? cooldownRemaining / cd : 0f;
 
         if (cooldownText != null)
-        {
             cooldownText.text = cooldownRemaining > 0f
                 ? Mathf.Ceil(cooldownRemaining).ToString()
                 : "";
-        }
+    }
+
+    // An toàn: nếu nút bị tắt lúc đang bắn, tắt luôn pose beam kẻo bị kẹt
+    void OnDisable()
+    {
+        if (isCasting && skill is BeamSkillSO beam && playerAnimator != null)
+            playerAnimator.SetBool(beam.animatorBool, false);
+        isCasting = false;
     }
 }
