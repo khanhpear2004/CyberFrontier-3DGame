@@ -7,6 +7,10 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float walkSpeed = 2.0f;
     public float flySpeed = 5.0f;
+    public float runSpeed = 6.0f;
+    public float flyVerticalInput = 0f;
+    public KeyCode runKey = KeyCode.LeftShift;
+
     [Tooltip("Thời gian làm mượt khi xoay (giây). Nhỏ = xoay nhanh & gắt, lớn = mượt & chậm. ~0.1 là mượt mà nhạy.")]
     public float turnSmoothTime = 0.1f;
     public float gravity = -9.81f;
@@ -17,18 +21,21 @@ public class PlayerController : MonoBehaviour
 
     [Header("Fly Toggle (bật/tắt bay lơ lửng)")]
     public KeyCode flyToggleKey;
-    private bool isFlying = false;
+    public bool isFlying = false;
+    public bool isRunning = false;
 
     [Header("Flight Controls (Lớp Con & Lực đẩy)")]
-    public Transform modelTransform; // Kéo object CyberSoldierModel vào đây ở Inspector!
+    public Transform modelTransform; 
+    public KeyCode flyUpKey = KeyCode.Space;      
+    public KeyCode flyDownKey = KeyCode.LeftControl;
     public float ascendSpeed = 4.0f;
 
     [Header("Flight Angles (Chỉnh góc nghiêng X khi bay)")]
-    public float hoverPitch = -90f;        // Bắt đầu bay, lơ lửng (đứng thẳng)
-    public float forwardPitch = 90f;     // Di chuyển ngang (Superman)
-    public float upPitch = -30f;         // Vừa bay vừa đi lên (Ngửa lên)
-    public float downPitch = 120f;       // Vừa bay vừa đi xuống (Chúi xuống)
-    public float pitchSmoothSpeed = 4f;  // Độ mượt khi chuyển tư thế
+    public float hoverPitch = -90f;        
+    public float forwardPitch = 90f;    
+    public float upPitch = -30f;  
+    public float downPitch = 120f; 
+    public float pitchSmoothSpeed = 4f;
 
     [Header("Camera Info")]
     public Transform mainCamera;
@@ -51,7 +58,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
     private Animator animator;
     private Vector3 velocity;
-    private float turnSmoothVelocity; // dùng cho SmoothDampAngle (đừng chỉnh tay)
+    private float turnSmoothVelocity;
 
     private CinemachineThirdPersonFollow thirdPersonFollow;
     private CinemachinePositionComposer positionComposer;
@@ -70,12 +77,12 @@ public class PlayerController : MonoBehaviour
         // Lấy component điều khiển vị trí trong Cinemachine 3.x
         if (cinemachineCamera != null)
         {
-            // Cinemachine 3.x sử dụng TryGetComponent để lấy các Behaviour
+           
             cinemachineCamera.TryGetComponent(out thirdPersonFollow);
             cinemachineCamera.TryGetComponent(out positionComposer);
             cinemachineCamera.TryGetComponent(out orbitalFollow);
 
-            // FreeLook/Orbital: mặc định RadialAxis bị khoá ở (1,1) -> mở range cho phép zoom
+          
             if (orbitalFollow != null)
             {
                 orbitalFollow.RadialAxis.Range = new Vector2(minZoomMultiplier, maxZoomMultiplier);
@@ -86,11 +93,19 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        
         ToggleThrusters(false);
     }
 
     void Update()
     {
+        flyVerticalInput = 0f;
+        if (isFlying)
+        {
+            if (Input.GetMouseButton(0)) flyVerticalInput = 1f;
+            if (Input.GetMouseButton(1)) flyVerticalInput = -1f;
+        }
+
         HandleMovement();
         HandleCameraZoom();
         HandleFlying();
@@ -100,7 +115,7 @@ public class PlayerController : MonoBehaviour
     {
         if (modelTransform != null)
         {
-            float targetPitch = 0f; // Trạng thái mặc định khi đi bộ
+            float targetPitch = 0f; 
 
             if (animator != null)
             {
@@ -110,34 +125,26 @@ public class PlayerController : MonoBehaviour
             if (isFlying)
             {
                 float moveMagnitude = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).magnitude;
-                float flyVertical = 0f;
-                if (Input.GetKey(KeyCode.Space)) flyVertical = 1f;       // Bay lên
-                if (Input.GetKey(KeyCode.LeftControl)) flyVertical = -1f; // Bay xuống
-
-                // 2. Tính toán góc nghiêng hợp lý
+        
                 if (moveMagnitude > 0.1f) 
                 {
-                    // TRƯỜNG HỢP A: Có di chuyển ngang (WASD)
-                    if (flyVertical > 0) 
-                        targetPitch = forwardPitch - 20f; // Bay ngang + Lên -> Hơi ngửa lên
-                    else if (flyVertical < 0) 
-                        targetPitch = forwardPitch + 20f; // Bay ngang + Xuống -> Hơi chúi xuống
+                    if (flyVerticalInput > 0) 
+                        targetPitch = forwardPitch - 20f; 
+                    else if (flyVerticalInput < 0) 
+                        targetPitch = forwardPitch + 20f; 
                     else 
-                        targetPitch = forwardPitch;       // Chỉ bay ngang (90 độ)
+                        targetPitch = forwardPitch;
                 }
                 else 
                 {
-                    // TRƯỜNG HỢP B: Lơ lửng tại chỗ (Không bấm WASD)
-                    if (flyVertical > 0) 
-                        targetPitch = upPitch;            // Chỉ bay thẳng lên
-                    else if (flyVertical < 0) 
-                        targetPitch = downPitch;          // Chỉ bay thẳng xuống
+                    if (flyVerticalInput > 0) 
+                        targetPitch = upPitch;            
+                    else if (flyVerticalInput < 0) 
+                        targetPitch = downPitch;  
                     else 
-                        targetPitch = hoverPitch;         // Đứng im tại chỗ (0 độ)
+                        targetPitch = hoverPitch;   
                 }
             }
-
-            // 3. Thực thi nội suy (Slerp) để chuyển góc mượt mà
             Quaternion targetRotation = Quaternion.Euler(targetPitch, 0f, 0f);
             modelTransform.localRotation = Quaternion.Slerp(modelTransform.localRotation, targetRotation, Time.deltaTime * pitchSmoothSpeed);
         }
@@ -147,6 +154,8 @@ public class PlayerController : MonoBehaviour
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
+
+        isRunning = Input.GetKey(runKey);
 
         if (Input.GetKeyDown(flyToggleKey))
         {
@@ -162,40 +171,24 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-
-        float currentSpeed = isFlying ? flySpeed : walkSpeed;
+        float currentSpeed;
+        if (isFlying) 
+            currentSpeed = flySpeed;
+        else if (isRunning) 
+            currentSpeed = runSpeed;
+        else 
+            currentSpeed = walkSpeed;
 
         if (isAiming)
             HandleAimMovement(horizontal, vertical, currentSpeed);
         else
-            HandleFreeMovement(horizontal, vertical, currentSpeed);
-
-        // if (isFlying)
-        // {
-        //     float flyVertical = 0f;
-        //     if (Input.GetKey(KeyCode.Space)) flyVertical = 1f;       // Bay lên
-        //     if (Input.GetKey(KeyCode.LeftControl)) flyVertical = -1f; // Bay xuống
-
-        //     velocity.y = flyVertical * ascendSpeed;
-        // }
-        // else
-        // {
-        //     if (controller.isGrounded && velocity.y < 0)
-        //     {
-        //         velocity.y = -2f;
-        //     }
-        //     velocity.y += gravity * Time.deltaTime;
-        // }
+            HandleFreeMovement(horizontal, vertical, currentSpeed, isRunning);
 
         if (isFlying)
         {
-            float flyVertical = 0f;
-            if (Input.GetKey(KeyCode.Space)) flyVertical = 1f;       
-            if (Input.GetKey(KeyCode.LeftControl)) flyVertical = -1f; 
-
-            if (flyVertical != 0)
+            if (flyVerticalInput != 0)
             {
-                velocity.y = flyVertical * ascendSpeed;
+                velocity.y = flyVerticalInput * ascendSpeed;
             }
             else
             {
@@ -204,7 +197,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Rơi tự do khi đi bộ
             if (controller.isGrounded && velocity.y < 0)
             {
                 velocity.y = -2f;
@@ -215,13 +207,12 @@ public class PlayerController : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
-    private void HandleFreeMovement(float horizontal, float vertical, float currentSpeed)
+    private void HandleFreeMovement(float horizontal, float vertical, float currentSpeed, bool isRunning)
     {
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
         if (direction.magnitude >= 0.1f)
         {
-            // Góc đích = hướng phím WASD + hướng camera (camera-relative)
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             if (mainCamera != null) targetAngle += mainCamera.eulerAngles.y;
 
@@ -235,20 +226,24 @@ public class PlayerController : MonoBehaviour
             controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
         }
 
-        float speedPercent = direction.magnitude == 0 ? 0f : (isFlying ? 1f : 0.5f);
+        float speedPercent = 0f;
+        if (direction.magnitude > 0.1f)
+        {
+            if (isFlying || isRunning) 
+                speedPercent = 1f;    
+            else 
+                speedPercent = 0.5f;  
+        }
         animator.SetFloat("Speed", speedPercent, 0.1f, Time.deltaTime);
     }
 
     private void HandleAimMovement(float horizontal, float vertical, float currentSpeed)
     {
-        // 1. Chỉ ép thân nhân vật xoay trục Y (trái/phải) theo Camera. 
-        // Trục X (lên/xuống) Camera đã tự lo bằng Pan Tilt.
         if (mainCamera != null)
         {
             transform.rotation = Quaternion.Euler(0f, mainCamera.eulerAngles.y, 0f);
         }
 
-        // 2. WASD: Di chuyển ngang/dọc theo hướng mắt nhìn
         Vector3 moveDir = transform.right * horizontal + transform.forward * vertical;
         if (moveDir.magnitude > 0.1f)
         {

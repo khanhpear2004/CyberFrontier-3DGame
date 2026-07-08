@@ -38,23 +38,27 @@ public class PlayerAimShooter : MonoBehaviour
     {
         if (viewCamera == null) viewCamera = Camera.main;
         if (viewCamera != null) viewCamera.TryGetComponent(out brain);
-        if (animator == null) animator = GetComponent<Animator>();
+        if (animator == null) animator = GetComponentInChildren<Animator>();
 
         playerController = GetComponent<PlayerController>();
         energy = GetComponent<PlayerEnergy>();
         if (energy == null) energy = FindFirstObjectByType<PlayerEnergy>();
 
-        SetAim(false); // khởi đầu ở chế độ thường
+        SetAim(false);
     }
 
     void Update()
     {
+        if (playerController != null && playerController.isFlying)
+        {
+            if (isAiming) SetAim(false); 
+            return; 
+        }
+        
         if (Input.GetKeyDown(aimToggleKey)) SetAim(!isAiming);
 
-        // Chỉ coi là "đang ngắm thật sự" khi camera đã blend XONG sang AimCamera
         bool aimLive = isAiming && IsAimCameraLive();
 
-        // Tâm ngắm chỉ hiện khi đã chuyển hẳn sang AimCamera
         if (crosshair != null && crosshair.activeSelf != aimLive)
             crosshair.SetActive(aimLive);
 
@@ -76,14 +80,12 @@ public class PlayerAimShooter : MonoBehaviour
 
         if (aimCamera != null) aimCamera.Priority = on ? aimPriority : normalPriority;
         if (animator != null) animator.SetBool(aimingBool, on);
-        if (playerController != null) playerController.SetAiming(on); // đổi chế độ điều khiển (ngắm/thường)
-        // crosshair KHÔNG bật ở đây — đợi camera blend xong (xử lý trong Update)
+        if (playerController != null) playerController.SetAiming(on); 
     }
 
-    // True khi AimCamera đã live hoàn toàn (không còn đang blend)
     bool IsAimCameraLive()
     {
-        if (brain == null || aimCamera == null) return true; // không có brain -> coi như sẵn sàng
+        if (brain == null || aimCamera == null) return true;
         return !brain.IsBlending && ReferenceEquals(brain.ActiveVirtualCamera, aimCamera);
     }
 
@@ -91,7 +93,6 @@ public class PlayerAimShooter : MonoBehaviour
     {
         if (bulletPrefab == null || muzzle == null || viewCamera == null) return false;
 
-        // Hết năng lượng thì không bắn (vẫn ở chế độ ngắm, bấm Q để thoát)
         if (energy != null && !energy.TrySpend(energyPerShot)) return false;
 
         Vector3 aimPoint = GetAimPoint();
