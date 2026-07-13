@@ -64,13 +64,25 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -3133498875991405556, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -2859109400176981367, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 77b4b7de9994bb241819c6701dc6d96c, type: 2}
     - target: {fileID: 919132149155446097, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
       propertyPath: m_Name
-      value: orangeChest
+      value: orange box
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027228791024609348, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7418098771544918504, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -86,6 +98,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
       insertIndex: -1
       addedObject: {fileID: 924103935625904989}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -3474095755200651647}
   m_SourcePrefab: {fileID: 100100000, guid: 3be3a56eed219d64e9bef11a20b19271, type: 3}
 --- !u!1 &3821719121346246433 stripped
 GameObject:
@@ -135,3 +150,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-3474095755200651647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3821719121346246433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d25745c369d40aaab1359f49d3e3017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChestInteractable
+  chestAnimator: {fileID: 924103935625904989}
+  promptText: Open Chest
+  canOpenOnlyOnce: 1

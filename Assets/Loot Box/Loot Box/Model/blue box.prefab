@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2750219865327026608}
   - component: {fileID: 7550659869182229850}
   - component: {fileID: 3886367915275497325}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Lid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,6 +61,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -82,9 +84,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7877490295049281616
 GameObject:
@@ -97,7 +101,8 @@ GameObject:
   - component: {fileID: 7357095099212217066}
   - component: {fileID: 2266800650603359220}
   - component: {fileID: 2927721968168866189}
-  m_Layer: 0
+  - component: {fileID: -8854317872343765643}
+  m_Layer: 7
   m_Name: blue box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,6 +169,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.53310835, y: 0.31925327, z: 0.4056407}
   m_Center: {x: 0.0016583204, y: 0.17925066, z: 0.0046934686}
+--- !u!114 &-8854317872343765643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7877490295049281616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d25745c369d40aaab1359f49d3e3017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChestInteractable
+  chestAnimator: {fileID: 2266800650603359220}
+  promptText: Open Chest
+  canOpenOnlyOnce: 1
 --- !u!1 &9070083367962075417
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,7 +195,7 @@ GameObject:
   - component: {fileID: 7565227135554565097}
   - component: {fileID: 2186898398427728011}
   - component: {fileID: 8157685146518460806}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,6 +245,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -246,7 +268,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
