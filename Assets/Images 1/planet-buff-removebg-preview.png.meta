@@ -1,0 +1,1376 @@
+fileFormatVersion: 2
+guid: cf6c145ec41553742b925347f7a0d3c6
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_0
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 529
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21b03a128b7b350408671f4ac2982a7c
+      internalID: 1872147598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_1
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 531
+        width: 38
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f9e06a0a2a723249a60846f2c6e9f61
+      internalID: -1810043573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_2
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 531
+        width: 42
+        height: 51
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f225984880f1d8d4faec840c56fc2440
+      internalID: 1622992805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_3
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 532
+        width: 37
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a299323328722834f8bdba447a1d204d
+      internalID: 817472708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_4
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 531
+        width: 44
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63a528da373d8c2458c950df42e7b1b4
+      internalID: 1199774808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_5
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 531
+        width: 44
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 183cb1ea9423e0649af1c955d30e234c
+      internalID: -848113788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_6
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 467
+        width: 46
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8cbd6f030819b24f94c493eb875047b
+      internalID: 1332880402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_7
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 470
+        width: 41
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3cd0908a438f13244865c6ee558a4c7a
+      internalID: 1918347330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_8
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 468
+        width: 43
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 040f59e6bdf9daf45a53a59dc15ec4b4
+      internalID: -1801351762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_9
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 467
+        width: 47
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d11471dbfdf5c543a686aaeeec5f92a
+      internalID: -1018529123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_10
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 469
+        width: 44
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08ba41679263cc64eb3e4c86adfaf5b6
+      internalID: 292196597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_11
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 470
+        width: 43
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 720953055efe6094aace7305a28bc230
+      internalID: -510664042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_12
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 408
+        width: 42
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f2429710adcff34999dfefb9d075d91
+      internalID: 436138733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_13
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 408
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac0e4930031816c4a9ccdc81c07a1795
+      internalID: -304416996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_14
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 409
+        width: 42
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbe37437a8279484ca9d98a16da791c8
+      internalID: 2032566700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_15
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 408
+        width: 48
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c81ebe9f053ddd34b9223b378f833eb0
+      internalID: -1178436893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_16
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 407
+        width: 44
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c00d0e0d5fb46434890d31c1bb217449
+      internalID: 1645600978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_17
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 409
+        width: 42
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e809b074ef1c99445982ebbbe4976c7a
+      internalID: -440587945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_18
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 342
+        width: 52
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38c2d88985b68674d9350df3385dba0d
+      internalID: 1462236181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_19
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 345
+        width: 43
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9fe24228e9a483b4f96fb8b20e5a1f0f
+      internalID: 1262471168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_20
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 346
+        width: 39
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: adad422557cbc18478bbc710fa7c7e1b
+      internalID: 665411235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_21
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 345
+        width: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74a9ed3cd4838ca479ddd2b2d8c7015e
+      internalID: 1704594232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_22
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 347
+        width: 35
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82a6aec1e5f0a9e419dbd893a8365c4f
+      internalID: -758746743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_23
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 351
+        width: 39
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22af77f6208a4c8408e00bce497e9940
+      internalID: -2074894228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_24
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 282
+        width: 42
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d92e3984cedc8294b83036767f5af2da
+      internalID: -1656977627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_25
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 282
+        width: 45
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d8cd077321373d43966ae3934b2b71d
+      internalID: -669867790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_26
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 280
+        width: 49
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4333340d65cec1e41bbd7eac234b06cc
+      internalID: 295995917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_27
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 283
+        width: 44
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6141e436263d5cc4fa3d363568eb2e2f
+      internalID: -245439359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_28
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 278
+        width: 46
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08ef117903c249c4f8c54590ec02c06e
+      internalID: -1712127939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_29
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 286
+        width: 38
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18331e2cf1f4a1d4295e1362e6709430
+      internalID: -706611338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_30
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 220
+        width: 52
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f060e3dc1c918c24dbeab418b045d7e7
+      internalID: -24088720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_31
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 221
+        width: 39
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb6a5ad28e4774d43b860bfe9ecdd253
+      internalID: 2076802001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_32
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 215
+        width: 48
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d063799e9c1b76f46af6832423fe0633
+      internalID: -2097794244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_33
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 215
+        width: 48
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1283b36f22594a4ebe88eb55423500a
+      internalID: -2072706818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_34
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 221
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14a14579bfb7fab42886d1a5a787b6a9
+      internalID: -491660938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_35
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 217
+        width: 41
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7803d07d1133277459d25eef46476e69
+      internalID: -1383426161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_36
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 159
+        width: 41
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b86c0b9191aa094aa34a769b0a298d2
+      internalID: -1167010401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_37
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 154
+        width: 47
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 743497fa3bab0e244a58f56ea01f9954
+      internalID: 979504950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_38
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 163
+        width: 35
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63d6031bacadc1c45a0728e0befbdfc3
+      internalID: 336633382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_39
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 154
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2f869f1bca4d0b47bff76766185fd4e
+      internalID: -1326468655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_40
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 159
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d83b9b19c297d8548bd44bf2d4aa28b4
+      internalID: -193860760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_41
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 155
+        width: 44
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be51617e13baf7b4e908282be99eb85d
+      internalID: 1347175142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_42
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 90
+        width: 51
+        height: 53
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 122ff18536acdeb4086a0d21befe1422
+      internalID: 1451178005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_43
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 95
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 952db242bd9da85428336adeeaee79ff
+      internalID: -732940454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_44
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 93
+        width: 49
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad99bce46104e5e4ab7414ce7231a2c7
+      internalID: 80709905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_45
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 95
+        width: 44
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c221d2e34a1ffc64c8c456d9dcf2f66b
+      internalID: 1884534121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_46
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 97
+        width: 46
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c4375732b56e8646bf2ec3ef710c1b8
+      internalID: 380409511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_47
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 96
+        width: 39
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: abed234919972aa44aacfb33e8ecc6ae
+      internalID: -1568657591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_48
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 37
+        width: 39
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0cbbf4caa9e763b43ad0b3b8018f6d81
+      internalID: -1969149971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_49
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 33
+        width: 45
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df52525e7f8ab284dae88391a44ed20c
+      internalID: -475928843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_50
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 30
+        width: 50
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2950a3dd5e9c8ff41887af0dd5103684
+      internalID: 789348359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_51
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 36
+        width: 52
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a03e7f170e764547aa299f7a2669b30
+      internalID: -1125553602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_52
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 38
+        width: 35
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd3b9615e47e93343b2500f2df40139c
+      internalID: 1128845768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: planet-buff-removebg-preview_53
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 36
+        width: 54
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 471d6d9dfda95bd408f23c36ccbf362e
+      internalID: -185864513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6673caa2069be7a41be9e5c1f0e5993c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":6.0,"y":9.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      planet-buff-removebg-preview_0: 1872147598
+      planet-buff-removebg-preview_1: -1810043573
+      planet-buff-removebg-preview_10: 292196597
+      planet-buff-removebg-preview_11: -510664042
+      planet-buff-removebg-preview_12: 436138733
+      planet-buff-removebg-preview_13: -304416996
+      planet-buff-removebg-preview_14: 2032566700
+      planet-buff-removebg-preview_15: -1178436893
+      planet-buff-removebg-preview_16: 1645600978
+      planet-buff-removebg-preview_17: -440587945
+      planet-buff-removebg-preview_18: 1462236181
+      planet-buff-removebg-preview_19: 1262471168
+      planet-buff-removebg-preview_2: 1622992805
+      planet-buff-removebg-preview_20: 665411235
+      planet-buff-removebg-preview_21: 1704594232
+      planet-buff-removebg-preview_22: -758746743
+      planet-buff-removebg-preview_23: -2074894228
+      planet-buff-removebg-preview_24: -1656977627
+      planet-buff-removebg-preview_25: -669867790
+      planet-buff-removebg-preview_26: 295995917
+      planet-buff-removebg-preview_27: -245439359
+      planet-buff-removebg-preview_28: -1712127939
+      planet-buff-removebg-preview_29: -706611338
+      planet-buff-removebg-preview_3: 817472708
+      planet-buff-removebg-preview_30: -24088720
+      planet-buff-removebg-preview_31: 2076802001
+      planet-buff-removebg-preview_32: -2097794244
+      planet-buff-removebg-preview_33: -2072706818
+      planet-buff-removebg-preview_34: -491660938
+      planet-buff-removebg-preview_35: -1383426161
+      planet-buff-removebg-preview_36: -1167010401
+      planet-buff-removebg-preview_37: 979504950
+      planet-buff-removebg-preview_38: 336633382
+      planet-buff-removebg-preview_39: -1326468655
+      planet-buff-removebg-preview_4: 1199774808
+      planet-buff-removebg-preview_40: -193860760
+      planet-buff-removebg-preview_41: 1347175142
+      planet-buff-removebg-preview_42: 1451178005
+      planet-buff-removebg-preview_43: -732940454
+      planet-buff-removebg-preview_44: 80709905
+      planet-buff-removebg-preview_45: 1884534121
+      planet-buff-removebg-preview_46: 380409511
+      planet-buff-removebg-preview_47: -1568657591
+      planet-buff-removebg-preview_48: -1969149971
+      planet-buff-removebg-preview_49: -475928843
+      planet-buff-removebg-preview_5: -848113788
+      planet-buff-removebg-preview_50: 789348359
+      planet-buff-removebg-preview_51: -1125553602
+      planet-buff-removebg-preview_52: 1128845768
+      planet-buff-removebg-preview_53: -185864513
+      planet-buff-removebg-preview_6: 1332880402
+      planet-buff-removebg-preview_7: 1918347330
+      planet-buff-removebg-preview_8: -1801351762
+      planet-buff-removebg-preview_9: -1018529123
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

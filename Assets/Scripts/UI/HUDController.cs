@@ -2,91 +2,121 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// Thanh máu kiểu hành động (ZZZ):
-// - Có "vệt mất máu" (damage trail) chạy đuổi theo khi mất máu
-// - Đổi màu theo lượng máu (Gradient)
-// - Hiển thị số máu
-// - Có phím TEST để kiểm tra máu bị trừ
 public class HUDController : MonoBehaviour
 {
-    [Header("Tham chiếu thanh máu")]
-    public Image fillImage;          // Phần máu chính (Image Type = Filled, Horizontal)
-    public Image delayedFillImage;   // Vệt mất máu chạy theo sau (tùy chọn)
-    public TMP_Text healthText;      // Chữ "80 / 100" (tùy chọn)
+    [Header("Player")]
+    [SerializeField] private PlayerHealth playerHealth;
 
-    [Header("Chỉ số máu")]
-    public int maxHealth = 100;
-    public int currentHealth = 100;
+    [Header("Tham chiếu thanh máu")]
+    [SerializeField] private Image fillImage;
+    [SerializeField] private Image delayedFillImage;
+    [SerializeField] private TMP_Text healthText;
 
     [Header("Hiệu ứng")]
-    public Gradient healthGradient;  // Trái = máu thấp (đỏ) -> Phải = máu đầy (xanh)
-    public float trailSpeed = 0.5f;  // Tốc độ vệt mất máu đuổi theo
+    [SerializeField] private Gradient healthGradient;
+    [SerializeField, Min(0f)] private float trailSpeed = 0.5f;
 
-    [Header("Phím TEST (tắt khi làm thật)")]
-    public bool enableTestKeys = true;
-    public KeyCode damageKey = KeyCode.K;   // Bấm K = mất máu
-    public KeyCode healKey = KeyCode.L;     // Bấm L = hồi máu
-    public int testAmount = 10;
+
+    [Header("Phím test")]
+    [SerializeField] private bool enableTestKeys = true;
+    [SerializeField] private KeyCode damageKey = KeyCode.K;
+    [SerializeField] private KeyCode healKey = KeyCode.L;
+    [SerializeField, Min(1)] private int testAmount = 10;
 
     void Start()
     {
-        RefreshBar(instant: true);
-    }
-
-    void Update()
-    {
-        // --- Phím test: cho bạn thấy thanh máu phản ứng ---
-        if (enableTestKeys)
+        if (playerHealth == null)
         {
-            if (Input.GetKeyDown(damageKey)) TakeDamage(testAmount);
-            if (Input.GetKeyDown(healKey)) Heal(testAmount);
+            playerHealth = FindFirstObjectByType<PlayerHealth>();
         }
 
-        // --- Vệt mất máu từ từ đuổi theo phần máu chính ---
-        if (delayedFillImage != null && fillImage != null)
+        if (playerHealth == null)
         {
-            if (delayedFillImage.fillAmount > fillImage.fillAmount)
-            {
-                delayedFillImage.fillAmount = Mathf.MoveTowards(
-                    delayedFillImage.fillAmount,
-                    fillImage.fillAmount,
-                    trailSpeed * Time.deltaTime);
-            }
-            else
-            {
-                delayedFillImage.fillAmount = fillImage.fillAmount;
-            }
+            Debug.LogError("HUDController không tìm thấy PlayerHealth.", this);
+            return;
+        }
+
+        playerHealth.HealthChanged += HandleHealthChanged;
+
+        ApplyHealth(playerHealth.CurrentHealth, playerHealth.MaxHealth, true);
+    }
+
+    private void Update()
+    {
+        HandleTestInput();
+        UpdateDelayedHealthBar();
+    }
+
+    private void OnDestroy()
+    {
+        if (playerHealth != null)
+        {
+            playerHealth.HealthChanged -= HandleHealthChanged;
         }
     }
 
-    public void TakeDamage(int amount)
+    private void HandleTestInput()
     {
-        currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
-        RefreshBar(); // máu chính tụt ngay, vệt sẽ đuổi theo sau (tạo hiệu ứng)
+        if (!enableTestKeys || playerHealth == null)
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(damageKey))
+        {
+            playerHealth.TakeDamage(testAmount);
+        }
+
+        if (Input.GetKeyDown(healKey))
+        {
+            playerHealth.Heal(testAmount);
+        }
     }
 
-    public void Heal(int amount)
+    private void HandleHealthChanged(float currentHealth, float maxHealth)
     {
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
-        RefreshBar(instant: true); // hồi máu thì cho cả vệt nhảy lên ngay
+        ApplyHealth(currentHealth, maxHealth, false);
     }
 
-    // Vẽ lại phần máu chính + màu + chữ
-    void RefreshBar(bool instant = false)
+    private void ApplyHealth(float currentHealth,float maxHealth,bool instant)
     {
-        float percent = (maxHealth > 0) ? (float)currentHealth / maxHealth : 0f;
+        float percent = maxHealth > 0f ? currentHealth / maxHealth : 0f;
 
         if (fillImage != null)
         {
             fillImage.fillAmount = percent;
+
             if (healthGradient != null)
+            {
                 fillImage.color = healthGradient.Evaluate(percent);
+            }
         }
 
         if (instant && delayedFillImage != null)
+        {
             delayedFillImage.fillAmount = percent;
+        }
 
         if (healthText != null)
-            healthText.text = currentHealth + " / " + maxHealth;
+        {
+            healthText.text =$"{Mathf.CeilToInt(currentHealth)} / " + $"{Mathf.CeilToInt(maxHealth)}";
+        }
+    }
+
+    private void UpdateDelayedHealthBar()
+    {
+        if (fillImage == null || delayedFillImage == null)
+        {
+            return;
+        }
+
+        if (delayedFillImage.fillAmount > fillImage.fillAmount)
+        {
+            delayedFillImage.fillAmount = Mathf.MoveTowards(delayedFillImage.fillAmount, fillImage.fillAmount, trailSpeed * Time.deltaTime);
+        }
+        else
+        {
+            delayedFillImage.fillAmount = fillImage.fillAmount;
+        }
     }
 }

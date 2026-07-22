@@ -99,6 +99,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (RewardPopupUI.IsGameplayInputBlocked)
+        {
+            return;
+        }
+        
         flyVerticalInput = 0f;
         if (isFlying)
         {

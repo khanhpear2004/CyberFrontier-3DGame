@@ -1,10 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
 
-// Chế độ NGẮM BẮN:
-//  - Bấm Q  -> bật/tắt chế độ ngắm (đổi sang AimCamera + hiện tâm ngắm + pose ngắm).
-//  - Giữ chuột TRÁI khi đang ngắm -> xả từng viên đạn theo tâm ngắm, mỗi viên tốn năng lượng.
-// Gắn script này lên CyberSoldier.
 public class PlayerAimShooter : MonoBehaviour
 {
     [Header("Phím")]
@@ -49,6 +45,11 @@ public class PlayerAimShooter : MonoBehaviour
 
     void Update()
     {
+        if (RewardPopupUI.IsGameplayInputBlocked)
+        {
+            return;
+        }
+
         if (playerController != null && playerController.isFlying)
         {
             if (isAiming) SetAim(false); 

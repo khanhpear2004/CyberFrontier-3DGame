@@ -1,62 +1,63 @@
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 public class PlayerInteractor : MonoBehaviour
 {
     [Header("Interaction")]
-    [SerializeField] private KeyCode interactionKey = KeyCode.E;
-    [SerializeField, Min(0.5f)] private float interactionRadius = 2.5f;
-    [SerializeField] private LayerMask interactionLayers = ~0;
+    [SerializeField] private KeyCode interactionKey = KeyCode.I;
 
-    [Header("UI")]
-    [SerializeField] private GameObject promptPanel;
-    [SerializeField] private TMP_Text keyText;
-    [SerializeField] private TMP_Text actionText;
+    [SerializeField, Min(0.5f)]
+    private float interactionRadius = 3f;
 
-    private readonly Collider[] nearbyColliders = new Collider[32];
-    private ChestInteractable currentChest;
+    [SerializeField]
+    private LayerMask interactionLayers = ~0;
 
-    private void Awake()
-    {
-        if (keyText != null)
-        {
-            keyText.text = interactionKey.ToString().ToUpper();
-        }
+    [Header("Prompt UI")]
+    [SerializeField] private RectTransform promptContainer;
+    [SerializeField] private InteractionPromptView promptPrefab;
 
-        SetPromptVisible(false);
-    }
+    private readonly Collider[] nearbyColliders =
+        new Collider[32];
+
+    // Ngăn một rương bị thêm nhiều lần nếu có nhiều collider.
+    private readonly HashSet<ChestInteractable> detectedChests =
+        new HashSet<ChestInteractable>();
+
+    // Danh sách được sắp xếp từ gần đến xa.
+    private readonly List<ChestInteractable> nearbyChests =
+        new List<ChestInteractable>();
+
+    // Ghép mỗi rương với đúng prompt của nó.
+    private readonly Dictionary<
+        ChestInteractable,
+        InteractionPromptView> promptViews =
+        new Dictionary<
+            ChestInteractable,
+            InteractionPromptView>();
+
+    // Danh sách tạm để xóa prompt an toàn.
+    private readonly List<ChestInteractable> removalBuffer =
+        new List<ChestInteractable>();
 
     private void Update()
     {
-        currentChest = FindNearestChest();
-
-        if (currentChest == null)
+        if (RewardPopupUI.IsGameplayInputBlocked)
         {
-            SetPromptVisible(false);
             return;
         }
-
-        SetPromptVisible(true);
-
-        if (actionText != null)
-        {
-            actionText.text = currentChest.PromptText;
-        }
-
-        if (Input.GetKeyDown(interactionKey))
-        {
-            currentChest.Interact();
-
-            if (!currentChest.CanInteract)
-            {
-                SetPromptVisible(false);
-            }
-        }
+        
+        DetectNearbyChests();
+        SynchronizePrompts();
+        UpdatePromptList();
+        HandleInteraction();
     }
 
-    private ChestInteractable FindNearestChest()
+    private void DetectNearbyChests()
     {
+        detectedChests.Clear();
+        nearbyChests.Clear();
+
         int hitCount = Physics.OverlapSphereNonAlloc(
             transform.position,
             interactionRadius,
@@ -64,14 +65,12 @@ public class PlayerInteractor : MonoBehaviour
             interactionLayers,
             QueryTriggerInteraction.Collide);
 
-        ChestInteractable nearestChest = null;
-        float nearestDistance = float.MaxValue;
-
         for (int i = 0; i < hitCount; i++)
         {
             Collider hit = nearbyColliders[i];
 
-            if (hit == null || hit.transform.IsChildOf(transform))
+            if (hit == null ||
+                hit.transform.IsChildOf(transform))
             {
                 continue;
             }
@@ -84,37 +83,162 @@ public class PlayerInteractor : MonoBehaviour
                 continue;
             }
 
-            Vector3 nearestPoint = hit.ClosestPoint(transform.position);
-            float distance =
-                (nearestPoint - transform.position).sqrMagnitude;
-
-            if (distance < nearestDistance)
+            // HashSet.Add trả về true nếu đây là rương mới.
+            if (detectedChests.Add(chest))
             {
-                nearestDistance = distance;
-                nearestChest = chest;
+                nearbyChests.Add(chest);
             }
         }
 
-        return nearestChest;
+        // Rương gần nhất sẽ nằm ở index 0.
+        nearbyChests.Sort(CompareChestDistance);
     }
 
-    private void SetPromptVisible(bool isVisible)
+    private int CompareChestDistance(
+        ChestInteractable first,
+        ChestInteractable second)
     {
-        if (promptPanel != null &&
-            promptPanel.activeSelf != isVisible)
+        float firstDistance =
+            (first.transform.position - transform.position)
+            .sqrMagnitude;
+
+        float secondDistance =
+            (second.transform.position - transform.position)
+            .sqrMagnitude;
+
+        return firstDistance.CompareTo(secondDistance);
+    }
+
+    private void SynchronizePrompts()
+    {
+        if (promptContainer == null || promptPrefab == null)
         {
-            promptPanel.SetActive(isVisible);
+            return;
+        }
+
+        // Tạo prompt cho những rương mới đi vào phạm vi.
+        foreach (ChestInteractable chest in nearbyChests)
+        {
+            if (promptViews.ContainsKey(chest))
+            {
+                continue;
+            }
+
+            InteractionPromptView newPrompt =
+                Instantiate(promptPrefab, promptContainer);
+
+            newPrompt.gameObject.SetActive(true);
+            promptViews.Add(chest, newPrompt);
+        }
+
+        // Tìm prompt của những rương đã ra khỏi phạm vi.
+        removalBuffer.Clear();
+
+        foreach (
+            KeyValuePair<
+                ChestInteractable,
+                InteractionPromptView> pair in promptViews)
+        {
+            if (pair.Key == null ||
+                !detectedChests.Contains(pair.Key))
+            {
+                removalBuffer.Add(pair.Key);
+            }
+        }
+
+        // Xóa sau khi đã duyệt Dictionary xong.
+        foreach (ChestInteractable chest in removalBuffer)
+        {
+            RemovePrompt(chest);
+        }
+    }
+
+    private void UpdatePromptList()
+    {
+        for (int i = 0; i < nearbyChests.Count; i++)
+        {
+            ChestInteractable chest = nearbyChests[i];
+
+            if (!promptViews.TryGetValue(
+                    chest,
+                    out InteractionPromptView prompt))
+            {
+                continue;
+            }
+
+           
+            prompt.transform.SetSiblingIndex(i);
+            bool isSelected = i == 0;
+            string keyLabel = isSelected
+                ? interactionKey.ToString().ToUpper()
+                : string.Empty;
+
+            prompt.SetContent(
+                keyLabel,
+                chest.PromptText,
+                isSelected);
+        }
+    }
+
+    private void HandleInteraction()
+    {
+        if (nearbyChests.Count == 0)
+        {
+            return;
+        }
+
+        if (!Input.GetKeyDown(interactionKey))
+        {
+            return;
+        }
+
+        ChestInteractable selectedChest = nearbyChests[0];
+
+        selectedChest.Interact();
+        RemovePrompt(selectedChest);
+
+        detectedChests.Remove(selectedChest);
+        nearbyChests.RemoveAt(0);
+    }
+
+    private void RemovePrompt(ChestInteractable chest)
+    {
+        if (!promptViews.TryGetValue(
+                chest,
+                out InteractionPromptView prompt))
+        {
+            return;
+        }
+
+        promptViews.Remove(chest);
+
+        if (prompt != null)
+        {
+            Destroy(prompt.gameObject);
         }
     }
 
     private void OnDisable()
     {
-        SetPromptVisible(false);
+        foreach (InteractionPromptView prompt in promptViews.Values)
+        {
+            if (prompt != null)
+            {
+                Destroy(prompt.gameObject);
+            }
+        }
+
+        promptViews.Clear();
+        detectedChests.Clear();
+        nearbyChests.Clear();
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, interactionRadius);
+
+        Gizmos.DrawWireSphere(
+            transform.position,
+            interactionRadius);
     }
 }
