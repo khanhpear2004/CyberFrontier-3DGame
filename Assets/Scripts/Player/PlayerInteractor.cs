@@ -42,7 +42,7 @@ public class PlayerInteractor : MonoBehaviour
 
     private void Update()
     {
-        if (RewardPopupUI.IsGameplayInputBlocked)
+        if (RewardPopupUI.IsGameplayInputBlocked || InventoryMenuUI.IsOpen)
         {
             return;
         }

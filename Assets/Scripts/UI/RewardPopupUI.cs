@@ -22,8 +22,6 @@ public class RewardPopupUI : MonoBehaviour
     [SerializeField, Min(0f)] private float closeDuration = 0.18f;
     [SerializeField] private Vector3 hiddenScale = new Vector3(0.9f, 0.9f, 1f);
 
-    private CursorLockMode previousCursorLockMode;
-    private bool previousCursorVisible;
     private bool closeRequested;
 
     public static bool IsGameplayInputBlocked { get; private set; }
@@ -64,7 +62,7 @@ public class RewardPopupUI : MonoBehaviour
         playerActionMap = inputActions.FindActionMap("Player", false);
     }
 
-    public IEnumerator ShowAndWait(IReadOnlyList<ItemEntry> rewards)
+    public IEnumerator ShowAndWait(IReadOnlyList<ItemEntry> itemRewards, IReadOnlyList<PlanetBuffData> buffRewards)
     {
         if (popupRoot == null || popupCanvasGroup == null || animatedPanel == null || itemLine == null)
         {
@@ -74,10 +72,10 @@ public class RewardPopupUI : MonoBehaviour
 
         closeRequested = false;
 
-        PopulateRewards(rewards);
+        PopulateRewards(itemRewards, buffRewards);
 
-        previousCursorLockMode = Cursor.lockState;
-        previousCursorVisible = Cursor.visible;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -114,8 +112,8 @@ public class RewardPopupUI : MonoBehaviour
         popupCanvasGroup.blocksRaycasts = false;
         popupRoot.SetActive(false);
 
-        Cursor.lockState = previousCursorLockMode;
-        Cursor.visible = previousCursorVisible;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         if (playerActionMap != null && wasPlayerMapEnabled)
         {
@@ -125,13 +123,13 @@ public class RewardPopupUI : MonoBehaviour
         IsGameplayInputBlocked = false;
     }
 
-    private void PopulateRewards(IReadOnlyList<ItemEntry> rewards)
+    private void PopulateRewards(IReadOnlyList<ItemEntry> itemRewards, IReadOnlyList<PlanetBuffData> buffRewards)
     {
         int visibleIndex = 0;
 
-        for (int i = 0; i < rewards.Count; i++)
+        for (int i = 0; i < itemRewards.Count; i++)
         {
-            ItemEntry reward = rewards[i];
+            ItemEntry reward = itemRewards[i];
 
             if (reward == null || reward.Item == null)
             {
@@ -139,11 +137,29 @@ public class RewardPopupUI : MonoBehaviour
             }
 
             RewardItemView view = GetOrCreateView(visibleIndex);
-
             view.Bind(reward.Item, reward.Amount);
             view.gameObject.SetActive(true);
 
             visibleIndex++;
+        }
+
+        if (buffRewards != null)
+        {
+            for (int i = 0; i < buffRewards.Count; i++)
+            {
+                PlanetBuffData buffData = buffRewards[i];
+
+                if (buffData == null)
+                {
+                    continue;
+                }
+
+                RewardItemView view = GetOrCreateView(visibleIndex);
+                view.Bind(buffData);
+                view.gameObject.SetActive(true);
+
+                visibleIndex++;
+            }
         }
 
         for (int i = visibleIndex; i < itemViewPool.Count; i++)

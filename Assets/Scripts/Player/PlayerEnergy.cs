@@ -1,7 +1,4 @@
 using UnityEngine;
-
-// Tài nguyên NĂNG LƯỢNG của người chơi (thay cho cooldown ở các chiêu tốn năng lượng).
-// Base 200. Bắn beam tốn 5/lần -> spam được tới khi cạn.
 public class PlayerEnergy : MonoBehaviour
 {
     [Header("Chỉ số năng lượng")]
@@ -13,15 +10,73 @@ public class PlayerEnergy : MonoBehaviour
     public float regenDelay = 1f;        // Chờ mấy giây sau lần dùng cuối mới bắt đầu hồi
 
     private float regenTimer = 0f;
-
-    // UI đăng ký sự kiện này để cập nhật thanh năng lượng. (current, max)
     public System.Action<float, float> OnEnergyChanged;
+    [SerializeField] private RuntimeStats runtimeStats;
+
+    private void Awake()
+    {
+        if (runtimeStats == null)
+        {
+            runtimeStats = GetComponent<RuntimeStats>();
+        }
+    }
 
     void Start()
     {
+        RefreshStats();
         currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
         Notify();
     }
+
+    private void OnEnable()
+    {
+        if (runtimeStats != null)
+        {
+            runtimeStats.StatChanged += HandleStatChanged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (runtimeStats != null)
+        {
+            runtimeStats.StatChanged -= HandleStatChanged;
+        }
+    }
+
+    private void RefreshStats()
+    {
+        if (runtimeStats == null)
+        {
+            return;
+        }
+
+        maxEnergy = runtimeStats.GetValue(StatType.MaxEnergy);
+        regenPerSecond = runtimeStats.GetValue(StatType.EnergyRegen);
+        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+    }
+
+    private void HandleStatChanged(StatType statType, float oldValue, float newValue)
+    {
+        if (statType == StatType.MaxEnergy)
+        {
+            float difference = newValue - oldValue;
+
+            maxEnergy = newValue;
+
+            if (difference > 0f)
+            {
+                currentEnergy += difference;
+            }
+            currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+            Notify();
+        }
+        else if (statType == StatType.EnergyRegen)
+        {
+            regenPerSecond = newValue;
+        }
+    }
+
 
     void Update()
     {
@@ -44,8 +99,6 @@ public class PlayerEnergy : MonoBehaviour
         Notify();
         return true;
     }
-
-    // Cộng năng lượng (nhặt pin, hồi...).
     public void Add(float amount)
     {
         currentEnergy = Mathf.Clamp(currentEnergy + amount, 0f, maxEnergy);

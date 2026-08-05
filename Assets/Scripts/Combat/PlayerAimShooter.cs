@@ -27,6 +27,8 @@ public class PlayerAimShooter : MonoBehaviour
     private PlayerEnergy energy;
     private CinemachineBrain brain;
     private PlayerController playerController;
+
+    [SerializeField] private RuntimeStats runtimeStats;
     private bool isAiming = false;
     private float fireTimer = 0f;
 
@@ -39,13 +41,17 @@ public class PlayerAimShooter : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         energy = GetComponent<PlayerEnergy>();
         if (energy == null) energy = FindFirstObjectByType<PlayerEnergy>();
+        if (runtimeStats == null)
+        {
+            runtimeStats = GetComponent<RuntimeStats>();
+        }
 
         SetAim(false);
     }
 
     void Update()
     {
-        if (RewardPopupUI.IsGameplayInputBlocked)
+        if (RewardPopupUI.IsGameplayInputBlocked || InventoryMenuUI.IsOpen)
         {
             return;
         }
@@ -67,10 +73,13 @@ public class PlayerAimShooter : MonoBehaviour
         {
             if (fireTimer > 0f) fireTimer -= Time.deltaTime;
 
-            // Giữ chuột trái -> xả đạn liên tục
             if (Input.GetMouseButton(0) && fireTimer <= 0f)
             {
-                if (TryFire()) fireTimer = 1f / Mathf.Max(0.01f, fireRate);
+                 if (TryFire())
+                {
+                    float currentFireRate = GetCurrentStat(StatType.FireRate, fireRate);
+                    fireTimer = 1f / Mathf.Max(0.01f, currentFireRate);
+                }
             }
         }
     }
@@ -99,7 +108,12 @@ public class PlayerAimShooter : MonoBehaviour
         Vector3 aimPoint = GetAimPoint();
         Vector3 dir = (aimPoint - muzzle.position).normalized;
 
-        Instantiate(bulletPrefab, muzzle.position, Quaternion.LookRotation(dir));
+        float finalDamage = GetCurrentStat(StatType.Damage, bulletPrefab.damage);
+        float finalProjectileSpeed = GetCurrentStat(StatType.ProjectileSpeed, bulletPrefab.speed);
+
+        Bullet bullet = Instantiate(bulletPrefab, muzzle.position, Quaternion.LookRotation(dir));
+        bullet.Initialize(finalDamage, finalProjectileSpeed);
+
         return true;
     }
 
@@ -116,5 +130,15 @@ public class PlayerAimShooter : MonoBehaviour
             return h.point;
         }
         return ray.origin + ray.direction * aimRange; // không trúng gì -> bắn ra xa
+    }
+
+    private float GetCurrentStat(StatType statType, float fallbackValue)
+    {
+        if (runtimeStats == null)
+        {
+            return fallbackValue;
+        }
+
+        return runtimeStats.GetValue(statType);
     }
 }

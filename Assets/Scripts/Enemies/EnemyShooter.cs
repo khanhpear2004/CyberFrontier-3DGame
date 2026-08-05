@@ -39,8 +39,12 @@ public class EnemyShooter : MonoBehaviour
 
         if (projectilePool == null)
         {
-            Debug.LogError($"{name}: EnemyShooter chưa được gắn EnemyProjectilePool.");
-            projectilePool = FindAnyObjectByType<EnemyProjectilePool>();
+            projectilePool = FindFirstObjectByType<EnemyProjectilePool>();
+        }
+
+        if (projectilePool == null)
+        {
+            Debug.LogError($"{name}: Không tìm thấy EnemyProjectilePool trong Scene");
         }
 
     }   
@@ -66,6 +70,11 @@ public class EnemyShooter : MonoBehaviour
         }
 
         fireRoutine = StartCoroutine(FireAfterDelay());
+    }
+
+    private void OnDisable()
+    {
+        StopFiring();
     }
 
     private IEnumerator FireAfterDelay()
@@ -130,5 +139,44 @@ public class EnemyShooter : MonoBehaviour
         }
 
         return Vector3.Angle(transform.forward, direction.normalized) <= maximumAimAngle;
+    }
+
+    public void ResetForSpawn()
+    {
+        StopFiring();
+
+        nextFireTime = Time.time + fireInterval;
+
+        if (animator != null)
+        {
+            animator.ResetTrigger(ShootHash);
+        }
+
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop(
+                true,
+                ParticleSystemStopBehavior.StopEmittingAndClear
+            );
+        }
+    }
+
+    public void StopForPool()
+    {
+        StopFiring();
+
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    private void StopFiring()
+    {
+        if (fireRoutine != null)
+        {
+            StopCoroutine(fireRoutine);
+            fireRoutine = null;
+        }
     }
 }

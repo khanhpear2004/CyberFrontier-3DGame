@@ -18,6 +18,11 @@ public class MouseLook : MonoBehaviour
 
     void Update()
     {
+        if (RewardPopupUI.IsGameplayInputBlocked || InventoryMenuUI.IsOpen)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(toggleKey))
         {
             isLookingEnabled = !isLookingEnabled; 

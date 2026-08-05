@@ -5031,6 +5031,10 @@ MonoBehaviour:
     amount: 1
   - item: {fileID: 11400000, guid: e4c63c40fbae0c742a4675e45041e737, type: 2}
     amount: 300
+  runItemManager: {fileID: 0}
+  planetBuffRewards:
+  - {fileID: 11400000, guid: e75eb25506404124ad6078c4eec90797, type: 2}
+  runPlanetBuffManager: {fileID: 0}
   openAnimationDuration: 4
   disappearDelay: 4
   fadeDuration: 3

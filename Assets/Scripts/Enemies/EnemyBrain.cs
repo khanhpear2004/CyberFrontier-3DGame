@@ -11,6 +11,8 @@ public class EnemyBrain : MonoBehaviour
         Chase,
         Aim
     }
+    [Header("Group Avoidance")]
+    [SerializeField] private Vector2Int avoidancePriorityRange = new Vector2Int(30, 70);
 
     [Header("Target")]
     [SerializeField] private Transform target;
@@ -52,7 +54,10 @@ public class EnemyBrain : MonoBehaviour
 
     private void Start()
     {
-        ChangeState(EnemyState.Idle);
+        if(currentState == (EnemyState)(-1))
+        {
+            ResetForSpawn();
+        }
     }
 
     private void Update()
@@ -203,6 +208,45 @@ public class EnemyBrain : MonoBehaviour
             0.1f,
             Time.deltaTime
         );
+    }
+
+    public void ResetForSpawn()
+    {
+        if (target == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+            if (player != null)
+            {
+                target = player.transform;
+            }
+        }
+
+        nextRepathTime = 0f;
+        currentState = (EnemyState)(-1);
+
+        if (agent != null)
+        {
+            int minimumPriority = Mathf.Clamp(avoidancePriorityRange.x, 0, 99);
+
+            int maximumPriority = Mathf.Clamp(avoidancePriorityRange.y, minimumPriority, 99);
+
+            agent.avoidancePriority = Random.Range(minimumPriority, maximumPriority + 1);
+        }
+
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+        }
+
+        if (animator != null)
+        {
+            animator.SetFloat(SpeedHash, 0f);
+            animator.SetBool(IsAimingHash, false);
+        }
+
+        ChangeState(EnemyState.Idle);
     }
 
     private void OnDrawGizmosSelected()
