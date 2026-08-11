@@ -117,7 +117,6 @@ public class PlayerAimShooter : MonoBehaviour
         return true;
     }
 
-    // Tìm điểm mà tâm ngắm (giữa màn hình) chỉ tới trong thế giới
     Vector3 GetAimPoint()
     {
         Ray ray = viewCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
@@ -140,5 +139,13 @@ public class PlayerAimShooter : MonoBehaviour
         }
 
         return runtimeStats.GetValue(statType);
+    }
+
+    public void CancelAim()
+    {
+        if (isAiming)
+        {
+            SetAim(false);
+        }
     }
 }

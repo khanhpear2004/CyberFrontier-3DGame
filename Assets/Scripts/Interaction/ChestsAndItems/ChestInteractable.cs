@@ -10,6 +10,10 @@ public class ChestInteractable : MonoBehaviour
     [SerializeField] private string promptText = "Open Chest";
     [SerializeField] private bool canOpenOnlyOnce = true;
 
+    [Header("Lock")]
+    [SerializeField] private bool startLocked = true;
+    private bool isLocked;
+
     [Header("VFX")]
     [SerializeField] private ParticleSystem openVfx;
 
@@ -33,9 +37,12 @@ public class ChestInteractable : MonoBehaviour
     private bool isOpened;
     private bool rewardsGranted;
     public string PromptText => promptText;
-    public bool CanInteract => !canOpenOnlyOnce || !isOpened;
+    public bool IsLocked => isLocked;
+    public bool CanInteract => (!canOpenOnlyOnce || !isOpened) && !isLocked;
     private void Awake()
     {
+        isLocked = startLocked;
+
         if (chestAnimator == null)
         {
             chestAnimator = GetComponentInChildren<Animator>();
@@ -65,6 +72,27 @@ public class ChestInteractable : MonoBehaviour
         {
             openVfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
+    }
+
+    public void Lock()
+    {
+        if (isLocked || isOpened)
+        {
+            return;
+        }
+
+        isLocked = true;
+    }
+
+    public void Unlock()
+    {
+        if (!isLocked || isOpened)
+        {
+            return;
+        }
+
+        isLocked = false;
+        Debug.Log($"{name}: Chest đã được mở khóa.", this);
     }
 
     public void Interact()
@@ -149,6 +177,7 @@ public class ChestInteractable : MonoBehaviour
 
         isOpened = false;
         rewardsGranted = false;
+        isLocked = startLocked;
 
         if (openVfx != null)
         {

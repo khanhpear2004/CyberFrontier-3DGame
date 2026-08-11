@@ -4986,6 +4986,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 7
   damage: 10
+  playerImpactPrefab: {fileID: 3168931495420136830, guid: 8ce5028362fbd9b489726078c27919d2, type: 3}
+  dashAvoidedImpactPrefab: {fileID: 4347182184718176218, guid: a9f663692ed856046be09e465ac10d47, type: 3}
+  worldImpactPrefab: {fileID: 5615094662619708130, guid: 7e87ccc9625830648b316c6ed48b8790, type: 3}
+  impactLifetime: 2
 --- !u!1 &1540588367011230
 GameObject:
   m_ObjectHideFlags: 0

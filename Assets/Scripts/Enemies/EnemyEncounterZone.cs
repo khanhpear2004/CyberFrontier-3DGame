@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(BoxCollider))]
@@ -20,6 +21,43 @@ public class EnemyEncounterZone : MonoBehaviour
     public int RemainingEnemyCount => aliveEnemies.Count;
     public bool HasActivated => hasActivated;
     public bool IsCompleted => isCompleted;
+
+    public event Action<EnemyEncounterZone> EncounterCompleted;
+
+    [ContextMenu("Debug/Complete Encounter")]
+    public void DebugCompleteEncounter()
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (isCompleted)
+        {
+            return;
+        }
+
+        hasActivated = true;
+
+        if (aliveEnemies.Count == 0)
+        {
+            CompleteEncounter();
+            return;
+        }
+
+        List<EnemyHealth> enemies = new(aliveEnemies);
+
+        foreach (EnemyHealth enemyHealth in enemies)
+        {
+            if (enemyHealth != null && !enemyHealth.IsDead)
+            {
+                enemyHealth.TakeDamage(float.MaxValue);
+            }
+        }
+
+        if (!isCompleted)
+        {
+            StopTrackingAllEnemies();
+            CompleteEncounter();
+        }
+#endif
+    }
 
     private void Awake()
     {
@@ -152,6 +190,9 @@ public class EnemyEncounterZone : MonoBehaviour
         }
 
         isCompleted = true;
+
+        Debug.Log($"{name}: Encounter đã hoàn thành.", this);
+        EncounterCompleted?.Invoke(this);
     }
 
     private void TrackEnemy(EnemyHealth enemyHealth)

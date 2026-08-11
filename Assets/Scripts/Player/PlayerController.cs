@@ -38,6 +38,25 @@ public class PlayerController : MonoBehaviour
     public float downPitch = 120f; 
     public float pitchSmoothSpeed = 4f;
 
+    [Header("Dash")]
+    [SerializeField] private KeyCode dashKey = KeyCode.Space;
+    [SerializeField, Min(0.01f)] private float dashDuration = 0.18f;
+    [SerializeField, Min(0f)] private float dashSpeed = 22f;
+    [SerializeField, Min(0f)] private float dashCooldown = 1f;
+    [SerializeField] private PlayerHealth playerHealth;
+
+    [Header("Dash Visual")]
+    [SerializeField] private float dashForwardTilt = 18f;
+    [SerializeField] private float dashSideTilt = 12f;
+    [SerializeField, Min(0f)] private float dashTiltSpeed = 18f;
+
+    private bool isDashing;
+    private float dashTimer;
+    private float dashCooldownTimer;
+    private Vector3 dashDirection;
+
+    public bool IsDashing => isDashing;
+
     [Header("Camera Info")]
     public Transform mainCamera;
 
@@ -82,11 +101,18 @@ public class PlayerController : MonoBehaviour
 
     private static readonly int AimVerticalHash = Animator.StringToHash("AimVertical");
 
+    private static readonly int IsDashingHash = Animator.StringToHash("isDashing");
+
     private void Awake()
     {
         if (runtimeStats == null)
         {
             runtimeStats = GetComponent<RuntimeStats>();
+        }
+
+        if (playerHealth == null)
+        {
+            playerHealth = GetComponent<PlayerHealth>();
         }
     }
 
@@ -188,6 +214,24 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
+        UpdateDashCooldown();
+
+        if (isDashing)
+        {
+            UpdateDash();
+            HandleCameraZoom();
+            return;
+        }
+
+        HandleDashInput();
+
+        if (isDashing)
+        {
+            UpdateDash();
+            HandleCameraZoom();
+            return;
+        }
         
         flyVerticalInput = 0f;
         if (isFlying)
@@ -199,6 +243,132 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleCameraZoom();
         HandleFlying();
+    }
+
+    private void UpdateDashCooldown()
+    {
+        if (dashCooldownTimer <= 0f)
+        {
+            return;
+        }
+
+        dashCooldownTimer = Mathf.Max(0f, dashCooldownTimer - Time.deltaTime);
+    }
+
+    private void HandleDashInput()
+    {
+        if (!Input.GetKeyDown(dashKey))
+        {
+            return;
+        }
+
+        if (isFlying || dashCooldownTimer > 0f)
+        {
+            return;
+        }
+
+        Vector2 rawInput = new Vector2(
+            Input.GetAxisRaw("Horizontal"),
+            Input.GetAxisRaw("Vertical")
+        );
+
+        rawInput = Vector2.ClampMagnitude(rawInput, 1f);
+
+        Vector3 requestedDirection = GetCameraRelativeDirection(
+            rawInput.x,
+            rawInput.y
+        );
+
+        if (requestedDirection.sqrMagnitude < 0.001f)
+        {
+            requestedDirection = transform.forward;
+        }
+
+        StartDash(requestedDirection);
+    }
+
+    private void StartDash(Vector3 direction)
+    {
+        dashDirection = direction.normalized;
+        dashTimer = dashDuration;
+        dashCooldownTimer = dashCooldown;
+        isDashing = true;
+
+        if (playerHealth != null)
+        {
+            playerHealth.GrantDashInvulnerability(dashDuration);
+        }
+
+        currentPlanarVelocity = dashDirection * dashSpeed;
+        smoothedInput = Vector2.zero;
+        inputSmoothVelocity = Vector2.zero;
+
+        ToggleThrusters(true);
+
+        if (animator != null)
+        {
+            animator.SetBool(IsDashingHash, true);
+        }
+    }
+
+    private void UpdateDash()
+    {
+        dashTimer -= Time.deltaTime;
+
+        Vector3 dashVelocity = dashDirection * dashSpeed;
+
+        if (controller.isGrounded)
+        {
+            velocity.y = -2f;
+        }
+        else
+        {
+            velocity.y += gravity * Time.deltaTime;
+        }
+
+        dashVelocity.y = velocity.y;
+
+        controller.Move(dashVelocity * Time.deltaTime);
+
+        UpdateCharacterRotation();
+        UpdateDashVisual();
+
+        if (dashTimer <= 0f)
+        {
+            EndDash();
+        }
+    }
+
+    private void UpdateDashVisual()
+    {
+        if (modelTransform == null)
+        {
+            return;
+        }
+
+        Vector3 localDashDirection = transform.InverseTransformDirection(dashDirection);
+
+        float targetPitch = localDashDirection.z * dashForwardTilt;
+
+        float targetRoll = -localDashDirection.x * dashSideTilt;
+
+        Quaternion targetRotation = Quaternion.Euler(targetPitch, 0f, targetRoll);
+
+        modelTransform.localRotation = Quaternion.Slerp(modelTransform.localRotation, targetRotation, Time.deltaTime * dashTiltSpeed);
+    }
+
+    private void EndDash()
+    {
+        isDashing = false;
+        dashTimer = 0f;
+        currentPlanarVelocity = dashDirection * walkSpeed;
+
+        ToggleThrusters(isFlying);
+
+        if (animator != null)
+        {
+            animator.SetBool(IsDashingHash, false);
+        }
     }
 
     private void HandleFlying()
@@ -471,6 +641,39 @@ public class PlayerController : MonoBehaviour
         {
             leftThruster.Stop();
             rightThruster.Stop();
+        }
+    }
+
+    public void PrepareForDeath()
+    {
+        isDashing = false;
+        dashTimer = 0f;
+
+        isFlying = false;
+        isAiming = false;
+        isRunning = false;
+        flyVerticalInput = 0f;
+
+        velocity = Vector3.zero;
+        currentPlanarVelocity = Vector3.zero;
+        currentMoveSpeed = 0f;
+        smoothedInput = Vector2.zero;
+
+        ToggleThrusters(false);
+
+        if (modelTransform != null)
+        {
+            modelTransform.localRotation = Quaternion.identity;
+        }
+
+        if (animator != null)
+        {
+            animator.SetFloat(SpeedHash, 0f);
+            animator.SetFloat(AimHorizontalHash, 0f);
+            animator.SetFloat(AimVerticalHash, 0f);
+            animator.SetBool(IsDashingHash, false);
+            animator.SetBool("isFlying", false);
+            animator.SetBool("isBeaming", false);
         }
     }
 }

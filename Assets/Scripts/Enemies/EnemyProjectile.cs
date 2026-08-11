@@ -14,6 +14,12 @@ public class EnemyProjectile : MonoBehaviour
     [Header("Damage")]
     [SerializeField, Min(0f)] private float damage = 10f;
 
+    [Header("Impact Feedback")]
+    [SerializeField] private GameObject playerImpactPrefab;
+    [SerializeField] private GameObject dashAvoidedImpactPrefab;
+    [SerializeField] private GameObject worldImpactPrefab;
+    [SerializeField, Min(0.1f)] private float impactLifetime = 2f;
+
     private Transform owner;
     private float remainingLifeTime;
     private Action <EnemyProjectile> releaseCallback;
@@ -82,7 +88,23 @@ public class EnemyProjectile : MonoBehaviour
 
             IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
 
-            damageable?.TakeDamage(damage);
+            if (damageable != null)
+            {
+                PlayerHealth playerHealth = hit.collider.GetComponentInParent<PlayerHealth>();
+                bool wasDashAvoided = playerHealth != null && playerHealth.IsDashInvulnerable;
+
+                damageable.TakeDamage(damage);
+
+                GameObject impactPrefab = wasDashAvoided && dashAvoidedImpactPrefab != null
+                    ? dashAvoidedImpactPrefab
+                    : playerImpactPrefab;
+
+                HitImpactUtility.Spawn(impactPrefab, hit, impactLifetime);
+            }
+            else
+            {
+                HitImpactUtility.Spawn(worldImpactPrefab, hit, impactLifetime);
+            }
 
             // Destroy(gameObject); 
             ReturnToPool();

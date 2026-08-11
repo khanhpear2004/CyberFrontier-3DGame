@@ -13,6 +13,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [Header("Death")]
     [SerializeField, Min(0f)] private float despawnDelay = 2.5f;
     public event Action<float, float> HealthChanged;
+    public event Action<float> Damaged;
     public event Action<EnemyHealth> Died;
 
     public float CurrentHealth => currentHealth;
@@ -62,7 +63,15 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             return;
         }
 
+        float previousHealth = currentHealth;
         currentHealth = Mathf.Max(0f, currentHealth - amount);
+        float appliedDamage = previousHealth - currentHealth;
+
+        if (appliedDamage > 0f)
+        {
+            Damaged?.Invoke(appliedDamage);
+        }
+
         HealthChanged?.Invoke(currentHealth, maximumHealth);
 
         if (currentHealth <= 0f)

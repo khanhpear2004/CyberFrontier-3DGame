@@ -7,18 +7,35 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [Header("Health")]
     [SerializeField, Min(1f)] private float maxHealth = 100f;
     [SerializeField] private RuntimeStats runtimeStats;
+
+    [Header("Invulnerability")]
+    [SerializeField, Min(0f)] private float postHitInvulnerabilityDuration = 0.6f;
+
     public float MaxHealth => maxHealth;
     public float CurrentHealth { get; private set; }
     public bool IsDead { get; private set; }
+    public bool IsDashInvulnerable => dashInvulnerabilityTimer > 0f;
+    public bool IsPostHitInvulnerable => postHitInvulnerabilityTimer > 0f;
+    public bool IsInvulnerable => IsDashInvulnerable || IsPostHitInvulnerable;
 
     public event Action<float, float> HealthChanged;
+    public event Action<float> Damaged;
     public event Action Died;
+    public event Action DamageAvoided;
+
+    private float dashInvulnerabilityTimer;
+    private float postHitInvulnerabilityTimer;
 
     private void Awake()
     {
         if (runtimeStats == null)
         {
             runtimeStats = GetComponent<RuntimeStats>();
+        }
+
+        if (GetComponent<PlayerDamageFeedback>() == null)
+        {
+            gameObject.AddComponent<PlayerDamageFeedback>();
         }
 
         CurrentHealth = maxHealth;
@@ -40,9 +57,39 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         }
     }
 
+    private void Update()
+    {
+        if (dashInvulnerabilityTimer > 0f)
+        {
+            dashInvulnerabilityTimer = Mathf.Max(
+                0f,
+                dashInvulnerabilityTimer - Time.deltaTime
+            );
+        }
+
+        if (postHitInvulnerabilityTimer > 0f)
+        {
+            postHitInvulnerabilityTimer = Mathf.Max(
+                0f,
+                postHitInvulnerabilityTimer - Time.deltaTime
+            );
+        }
+    }
+
     public void TakeDamage(float amount)
     {
         if (IsDead || amount <= 0f)
+        {
+            return;
+        }
+
+        if (IsDashInvulnerable)
+        {
+            DamageAvoided?.Invoke();
+            return;
+        }
+
+        if (IsPostHitInvulnerable)
         {
             return;
         }
@@ -63,6 +110,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         CurrentHealth = Mathf.Max(CurrentHealth - finalDamage, 0f);
 
+        postHitInvulnerabilityTimer = postHitInvulnerabilityDuration;
+
+        Damaged?.Invoke(finalDamage);
         HealthChanged?.Invoke(CurrentHealth, maxHealth);
 
         if (CurrentHealth <= 0f)
@@ -71,6 +121,19 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             Died?.Invoke();
             Debug.Log("Player đã hết máu.", this);
         }
+    }
+
+    public void GrantDashInvulnerability(float duration)
+    {
+        if (duration <= 0f)
+        {
+            return;
+        }
+
+        dashInvulnerabilityTimer = Mathf.Max(
+            dashInvulnerabilityTimer,
+            duration
+        );
     }
 
     public void Heal(float amount)
