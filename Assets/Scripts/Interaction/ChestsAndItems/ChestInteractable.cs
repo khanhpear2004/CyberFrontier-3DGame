@@ -17,6 +17,9 @@ public class ChestInteractable : MonoBehaviour
     [Header("VFX")]
     [SerializeField] private ParticleSystem openVfx;
 
+    [Header("Audio")]
+    [SerializeField] private AudioCue openCue;
+
     [Header("Reward Items")]
     [SerializeField] private List<ItemEntry> rewards = new();
     [SerializeField] private RunItemManager runItemManager;
@@ -111,6 +114,11 @@ public class ChestInteractable : MonoBehaviour
 
         isOpened = true;
         chestAnimator.SetTrigger(OpenTrigger);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayAt(openCue, transform.position);
+        }
 
         if (openVfx != null)
         {

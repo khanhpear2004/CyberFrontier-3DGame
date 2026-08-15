@@ -73079,7 +73079,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -86016,7 +86016,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944079071}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.11326591, y: -0.69797635, z: 0.11326593, w: 0.69797623}
+  m_LocalRotation: {x: 0.113265894, y: -0.69797635, z: 0.11326592, w: 0.69797623}
   m_LocalPosition: {x: 26.271, y: 2.0559998, z: 3.2800007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -93132,13 +93132,21 @@ PlayableDirector:
     value: {fileID: 1962784011}
   - key: {fileID: 0}
     value: {fileID: 264445498}
-  - key: {fileID: 2548468458716596676, guid: 0dd91bd817181cf45ba34ffe92bab108, type: 2}
+  - key: {fileID: 0}
     value: {fileID: 392357148}
-  - key: {fileID: -5607783384270002981, guid: 0dd91bd817181cf45ba34ffe92bab108, type: 2}
+  - key: {fileID: 0}
     value: {fileID: 944079076}
-  - key: {fileID: -4580442250964158704, guid: 0dd91bd817181cf45ba34ffe92bab108, type: 2}
+  - key: {fileID: 0}
     value: {fileID: 1962784011}
-  - key: {fileID: 4944306382992654049, guid: 0dd91bd817181cf45ba34ffe92bab108, type: 2}
+  - key: {fileID: 0}
+    value: {fileID: 264445498}
+  - key: {fileID: 7554304477031795138, guid: 0dd91bd817181cf45ba34ffe92bab108, type: 2}
+    value: {fileID: 392357148}
+  - key: {fileID: 603128451010826390, guid: 0dd91bd817181cf45ba34ffe92bab108, type: 2}
+    value: {fileID: 944079076}
+  - key: {fileID: 1382679496389035857, guid: 0dd91bd817181cf45ba34ffe92bab108, type: 2}
+    value: {fileID: 1962784011}
+  - key: {fileID: 8905748414944586564, guid: 0dd91bd817181cf45ba34ffe92bab108, type: 2}
     value: {fileID: 264445498}
   m_ExposedReferences:
     m_References:
@@ -117043,6 +117051,7 @@ GameObject:
   - component: {fileID: 1358437632}
   - component: {fileID: 1358437633}
   - component: {fileID: 1358437634}
+  - component: {fileID: 1358437635}
   m_Layer: 0
   m_Name: CyberSoldier
   m_TagString: Player
@@ -117092,6 +117101,7 @@ MonoBehaviour:
   fireRate: 4
   energyPerShot: 1
   aimRange: 200
+  fireCue: {fileID: 11400000, guid: ecd022e2af62bf546ae544c64b240daa, type: 2}
   runtimeStats: {fileID: 0}
 --- !u!114 &1358437623
 MonoBehaviour:
@@ -117332,6 +117342,22 @@ MonoBehaviour:
   deathVfxScale: 1.5
   sequenceDuration: 1.4
   upperBodyLayerName: UpperBodyArm
+--- !u!114 &1358437635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358437620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 747ed62df78f4fd99fb838b6575e25f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementAudio
+  walkLoopCue: {fileID: 11400000, guid: c063b640a40b44bd8d9f0be6c9238397, type: 2}
+  runLoopCue: {fileID: 11400000, guid: 896d829f44184fb2bc586632bdf534b2, type: 2}
+  minimumPlanarSpeed: 0.2
+  dashCue: {fileID: 11400000, guid: c1dce994a7f340acb76f2759ae2ab258, type: 2}
 --- !u!1001 &1360579885
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -174498,7 +174524,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1962784010}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.04635434, y: -0.35129517, z: 0.017416954, w: 0.93495435}
+  m_LocalRotation: {x: 0.046354424, y: -0.35129517, z: 0.017416997, w: 0.93495435}
   m_LocalPosition: {x: 30.201, y: 4.226, z: -21.41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -207082,6 +207108,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8248143123514084472, guid: 5e72a67bd100f094188b99fa0e74780a, type: 3}
   m_PrefabInstance: {fileID: 8978634964579946095}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &9100000000000000101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9100000000000000102}
+  - component: {fileID: 9100000000000000103}
+  m_Layer: 0
+  m_Name: GameplayAudio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9100000000000000102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100000000000000101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9100000000000000103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100000000000000101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d45f3f4ac1934c649bcd35e92acbd491, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneMusicController
+  musicCue: {fileID: 11400000, guid: b5880a8bb35cca24184cc2298680378a, type: 2}
+  fadeDuration: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -207094,3 +207166,4 @@ SceneRoots:
   - {fileID: 1933417592067061325}
   - {fileID: 2929907394188964179}
   - {fileID: 3940415153105108532}
+  - {fileID: 9100000000000000102}

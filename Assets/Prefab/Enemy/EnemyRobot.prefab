@@ -375,6 +375,7 @@ MonoBehaviour:
   muzzle: {fileID: 8998808501048082821}
   muzzleFlash: {fileID: 6206779740638837080}
   projectilePool: {fileID: 0}
+  fireCue: {fileID: 11400000, guid: 78f4caaf18c664a4f95063f17b5f01d9, type: 2}
   fireInterval: 1.2
   projectileDelay: 0.15
   maximumAimAngle: 10
@@ -407,6 +408,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maximumHealth: 100
   despawnDelay: 2.5
+  deathAnimationTimeout: 5
 --- !u!114 &823456789012345678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,7 +419,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d31f39ad8a2d49b5a765b507993ea17b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDamageFeedback
   targetRenderers: []
   flashColor: {r: 1, g: 1, b: 1, a: 1}
@@ -439,13 +441,13 @@ MonoBehaviour:
   healthBarRoot: {fileID: 530684863483057093}
   spawnVfx: {fileID: 0}
   duration: 0.6
-  initialWidth: 0.75
-  scaleCurve:
+  fadeCurve:
     serializedVersion: 2
     m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  disappearDuration: 0.75
 --- !u!1 &5733795766133936821
 GameObject:
   m_ObjectHideFlags: 0

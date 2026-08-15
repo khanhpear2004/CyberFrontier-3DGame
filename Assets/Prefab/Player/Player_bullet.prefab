@@ -14592,6 +14592,8 @@ MonoBehaviour:
   damageImpactPrefab: {fileID: 5615094662619708130, guid: 7e87ccc9625830648b316c6ed48b8790, type: 3}
   worldImpactPrefab: {fileID: 5615094662619708130, guid: 7e87ccc9625830648b316c6ed48b8790, type: 3}
   impactLifetime: 2
+  damageImpactCue: {fileID: 11400000, guid: 925a8d1aab27b41408ae9a11b8a3a086, type: 2}
+  worldImpactCue: {fileID: 11400000, guid: 925a8d1aab27b41408ae9a11b8a3a086, type: 2}
 --- !u!1 &1924905033165216
 GameObject:
   m_ObjectHideFlags: 0

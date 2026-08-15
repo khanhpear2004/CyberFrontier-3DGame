@@ -12,13 +12,22 @@ public sealed class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject loadingOverlay;
 
+    [Header("Transitions")]
+    [SerializeField] private MenuPanelTransition mainMenuTransition;
+    [SerializeField] private MenuPanelTransition settingsTransition;
+    [SerializeField] private MenuPanelTransition loadingTransition;
+
     [Header("Buttons")]
     [SerializeField] private Button playButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private Button settingsBackButton;
 
+    [Header("Settings")]
+    [SerializeField] private AudioSettingsController settingsController;
+
     private bool isLoading;
+    private bool isTransitioning;
 
     private void Awake()
     {
@@ -26,12 +35,17 @@ public sealed class MainMenuUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        ShowMainMenu();
-
-        if (loadingOverlay != null)
+        if (settingsController == null)
         {
-            loadingOverlay.SetActive(false);
+            settingsController = FindAnyObjectByType<AudioSettingsController>();
         }
+
+        PrepareInitialPanelState();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(ShowInitialMenu());
     }
 
     private void OnEnable()
@@ -53,7 +67,7 @@ public sealed class MainMenuUI : MonoBehaviour
 
         if (settingsBackButton != null)
         {
-            settingsBackButton.onClick.AddListener(ShowMainMenu);
+            settingsBackButton.onClick.AddListener(CloseSettings);
         }
     }
 
@@ -76,13 +90,13 @@ public sealed class MainMenuUI : MonoBehaviour
 
         if (settingsBackButton != null)
         {
-            settingsBackButton.onClick.RemoveListener(ShowMainMenu);
+            settingsBackButton.onClick.RemoveListener(CloseSettings);
         }
     }
 
     private void Play()
     {
-        if (isLoading)
+        if (isLoading || isTransitioning)
         {
             return;
         }
@@ -93,22 +107,12 @@ public sealed class MainMenuUI : MonoBehaviour
     private IEnumerator LoadGameplayScene()
     {
         isLoading = true;
+        isTransitioning = true;
         SetButtonsInteractable(false);
 
-        if (mainMenuRoot != null)
-        {
-            mainMenuRoot.SetActive(false);
-        }
-
-        if (settingsPanel != null)
-        {
-            settingsPanel.SetActive(false);
-        }
-
-        if (loadingOverlay != null)
-        {
-            loadingOverlay.SetActive(true);
-        }
+        yield return HidePanel(mainMenuRoot, mainMenuTransition);
+        SetPanelImmediate(settingsPanel, settingsTransition, false);
+        yield return ShowPanel(loadingOverlay, loadingTransition);
 
         AsyncOperation loadOperation = SceneManager.LoadSceneAsync(GameplaySceneName, LoadSceneMode.Single);
 
@@ -127,33 +131,54 @@ public sealed class MainMenuUI : MonoBehaviour
 
     private void ShowSettings()
     {
-        if (isLoading)
+        if (isLoading || isTransitioning)
         {
             return;
         }
 
-        if (mainMenuRoot != null)
-        {
-            mainMenuRoot.SetActive(false);
-        }
-
-        if (settingsPanel != null)
-        {
-            settingsPanel.SetActive(true);
-        }
+        StartCoroutine(ShowSettingsRoutine());
     }
 
-    private void ShowMainMenu()
+    private void CloseSettings()
     {
-        if (settingsPanel != null)
+        if (isLoading || isTransitioning)
         {
-            settingsPanel.SetActive(false);
+            return;
         }
 
-        if (mainMenuRoot != null)
-        {
-            mainMenuRoot.SetActive(true);
-        }
+        StartCoroutine(CloseSettingsRoutine());
+    }
+
+    private IEnumerator ShowInitialMenu()
+    {
+        isTransitioning = true;
+        yield return ShowPanel(mainMenuRoot, mainMenuTransition);
+        SetButtonsInteractable(true);
+        isTransitioning = false;
+    }
+
+    private IEnumerator ShowSettingsRoutine()
+    {
+        isTransitioning = true;
+        SetButtonsInteractable(false);
+        settingsController?.BeginEdit();
+
+        yield return HidePanel(mainMenuRoot, mainMenuTransition);
+        yield return ShowPanel(settingsPanel, settingsTransition);
+
+        isTransitioning = false;
+    }
+
+    private IEnumerator CloseSettingsRoutine()
+    {
+        isTransitioning = true;
+        settingsController?.CancelPendingChanges();
+
+        yield return HidePanel(settingsPanel, settingsTransition);
+        yield return ShowPanel(mainMenuRoot, mainMenuTransition);
+
+        SetButtonsInteractable(true);
+        isTransitioning = false;
     }
 
     private void Quit()
@@ -168,14 +193,10 @@ public sealed class MainMenuUI : MonoBehaviour
     private void RestoreMenuAfterLoadFailure()
     {
         isLoading = false;
+        isTransitioning = false;
         SetButtonsInteractable(true);
-
-        if (loadingOverlay != null)
-        {
-            loadingOverlay.SetActive(false);
-        }
-
-        ShowMainMenu();
+        SetPanelImmediate(loadingOverlay, loadingTransition, false);
+        SetPanelImmediate(mainMenuRoot, mainMenuTransition, true);
     }
 
     private void SetButtonsInteractable(bool interactable)
@@ -193,6 +214,68 @@ public sealed class MainMenuUI : MonoBehaviour
         if (quitButton != null)
         {
             quitButton.interactable = interactable;
+        }
+    }
+
+    private void PrepareInitialPanelState()
+    {
+        SetPanelImmediate(mainMenuRoot, mainMenuTransition, false);
+        SetPanelImmediate(settingsPanel, settingsTransition, false);
+        SetPanelImmediate(loadingOverlay, loadingTransition, false);
+        SetButtonsInteractable(false);
+    }
+
+    private static IEnumerator ShowPanel(GameObject panel, MenuPanelTransition transition)
+    {
+        if (panel == null)
+        {
+            yield break;
+        }
+
+        if (transition != null)
+        {
+            yield return transition.Show();
+        }
+        else
+        {
+            panel.SetActive(true);
+        }
+    }
+
+    private static IEnumerator HidePanel(GameObject panel, MenuPanelTransition transition)
+    {
+        if (panel == null)
+        {
+            yield break;
+        }
+
+        if (transition != null)
+        {
+            yield return transition.Hide();
+        }
+        else
+        {
+            panel.SetActive(false);
+        }
+    }
+
+    private static void SetPanelImmediate(
+        GameObject panel,
+        MenuPanelTransition transition,
+        bool visible)
+    {
+        if (panel == null)
+        {
+            return;
+        }
+
+        if (transition != null)
+        {
+            transition.SetVisibleImmediate(visible);
+        }
+        else
+        {
+            panel.SetActive(visible);
         }
     }
 }

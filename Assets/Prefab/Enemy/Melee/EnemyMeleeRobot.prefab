@@ -374,6 +374,7 @@ MonoBehaviour:
   muzzle: {fileID: 8998808501048082821}
   muzzleFlash: {fileID: 6206779740638837080}
   projectilePool: {fileID: 0}
+  fireCue: {fileID: 11400000, guid: 78f4caaf18c664a4f95063f17b5f01d9, type: 2}
   fireInterval: 1.2
   projectileDelay: 0.15
   maximumAimAngle: 10
@@ -5623,10 +5624,6 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 994e7765f8bf41e5b8052df5c1c7b8c7, type: 2}
-    - target: {fileID: 7072444061591711132, guid: f432554f564e69242897607d34218939, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2836004475591197023, guid: f432554f564e69242897607d34218939, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5934,6 +5931,10 @@ PrefabInstance:
     - target: {fileID: 2836004475591695743, guid: f432554f564e69242897607d34218939, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072444061591711132, guid: f432554f564e69242897607d34218939, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -24,6 +24,9 @@ public class PlayerAimShooter : MonoBehaviour
     public float energyPerShot = 5f;      // Năng lượng mỗi viên
     public float aimRange = 200f;         // Tầm raycast tìm điểm ngắm
 
+    [Header("Audio")]
+    [SerializeField] private AudioCue fireCue;
+
     private PlayerEnergy energy;
     private CinemachineBrain brain;
     private PlayerController playerController;
@@ -113,6 +116,11 @@ public class PlayerAimShooter : MonoBehaviour
 
         Bullet bullet = Instantiate(bulletPrefab, muzzle.position, Quaternion.LookRotation(dir));
         bullet.Initialize(finalDamage, finalProjectileSpeed);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayAt(fireCue, muzzle.position);
+        }
 
         return true;
     }

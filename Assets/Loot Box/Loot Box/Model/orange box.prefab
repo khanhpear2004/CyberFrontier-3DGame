@@ -5023,7 +5023,9 @@ MonoBehaviour:
   chestAnimator: {fileID: 924103935625904989}
   promptText: Open Chest
   canOpenOnlyOnce: 1
+  startLocked: 1
   openVfx: {fileID: 6262082197320782457}
+  openCue: {fileID: 11400000, guid: 397c90b0a14cc944f836064250c194ab, type: 2}
   rewards:
   - item: {fileID: 11400000, guid: 95cb83233dba0e94b8c3030a55b3a7a6, type: 2}
     amount: 2

@@ -10,6 +10,9 @@ public class EnemyShooter : MonoBehaviour
 
     [SerializeField] private EnemyProjectilePool projectilePool;
 
+    [Header("Audio")]
+    [SerializeField] private AudioCue fireCue;
+
     [Header("Shooting")]
     [SerializeField, Min(0.1f)] private float fireInterval = 1.2f;
     [SerializeField, Min(0f)] private float projectileDelay = 0.15f;
@@ -106,6 +109,11 @@ public class EnemyShooter : MonoBehaviour
         }
 
         projectilePool.Spawn(transform, muzzle.position, direction);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayAt(fireCue, muzzle.position);
+        }
     }
 
     private bool HasLineOfSight()

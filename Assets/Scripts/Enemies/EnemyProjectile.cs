@@ -20,6 +20,11 @@ public class EnemyProjectile : MonoBehaviour
     [SerializeField] private GameObject worldImpactPrefab;
     [SerializeField, Min(0.1f)] private float impactLifetime = 2f;
 
+    [Header("Impact Audio")]
+    [SerializeField] private AudioCue playerImpactCue;
+    [SerializeField] private AudioCue dashAvoidedImpactCue;
+    [SerializeField] private AudioCue worldImpactCue;
+
     private Transform owner;
     private float remainingLifeTime;
     private Action <EnemyProjectile> releaseCallback;
@@ -100,10 +105,15 @@ public class EnemyProjectile : MonoBehaviour
                     : playerImpactPrefab;
 
                 HitImpactUtility.Spawn(impactPrefab, hit, impactLifetime);
+                AudioCue impactCue = wasDashAvoided && dashAvoidedImpactCue != null
+                    ? dashAvoidedImpactCue
+                    : playerImpactCue;
+                PlayImpactAudio(impactCue, hit.point);
             }
             else
             {
                 HitImpactUtility.Spawn(worldImpactPrefab, hit, impactLifetime);
+                PlayImpactAudio(worldImpactCue, hit.point);
             }
 
             // Destroy(gameObject); 
@@ -113,6 +123,14 @@ public class EnemyProjectile : MonoBehaviour
         }
 
         return false;
+    }
+
+    private static void PlayImpactAudio(AudioCue cue, Vector3 position)
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayAt(cue, position);
+        }
     }
 
     private bool BelongsToOwner(Transform hitTransform)
