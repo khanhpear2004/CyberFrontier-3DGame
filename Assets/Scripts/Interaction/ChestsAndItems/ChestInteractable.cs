@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 
 [DisallowMultipleComponent]
-public class ChestInteractable : MonoBehaviour
+public class ChestInteractable : MonoBehaviour, IInteractable
 {
     [SerializeField] private Animator chestAnimator;
     [SerializeField] private string promptText = "Open Chest";
@@ -42,6 +42,7 @@ public class ChestInteractable : MonoBehaviour
     public string PromptText => promptText;
     public bool IsLocked => isLocked;
     public bool CanInteract => (!canOpenOnlyOnce || !isOpened) && !isLocked;
+    public Transform InteractionTransform => transform;
     private void Awake()
     {
         isLocked = startLocked;

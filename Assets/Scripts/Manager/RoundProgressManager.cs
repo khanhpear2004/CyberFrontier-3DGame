@@ -14,8 +14,8 @@ public sealed class RoundProgressManager : MonoBehaviour
 
     public int CompletedCount => completedEncounters.Count;
     public int TotalCount => encounters.Count;
-    public bool IsRoundCompleted =>
-        TotalCount > 0 && CompletedCount == TotalCount;
+    public bool IsRoundCompleted => TotalCount > 0 && CompletedCount == TotalCount;
+    public IReadOnlyList<EnemyEncounterZone> Encounters => encounters;
 
     public event Action<int, int> ProgressChanged;
     public event Action AllEncountersCompleted;

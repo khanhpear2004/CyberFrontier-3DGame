@@ -9,6 +9,9 @@ public sealed class ExtractionZone : MonoBehaviour
     [SerializeField] private EnemyEncounterZone finalEncounter;
     [SerializeField] private GameObject zoneVisual;
 
+    [Header("Unlocking")]
+    [SerializeField] private bool unlockWhenFinalEncounterCompleted = true;
+
     private BoxCollider zoneTrigger;
     private bool isUnlocked;
     private bool isCompleted;
@@ -39,17 +42,20 @@ public sealed class ExtractionZone : MonoBehaviour
             return;
         }
 
-        finalEncounter.EncounterCompleted += HandleFinalEncounterCompleted;
-
-        if (finalEncounter.IsCompleted)
+        if (unlockWhenFinalEncounterCompleted)
         {
-            Unlock();
+            finalEncounter.EncounterCompleted += HandleFinalEncounterCompleted;
+        }
+
+        if (unlockWhenFinalEncounterCompleted && finalEncounter.IsCompleted)
+        {
+            UnlockExtraction();
         }
     }
 
     private void OnDisable()
     {
-        if (finalEncounter != null)
+        if (finalEncounter != null && unlockWhenFinalEncounterCompleted)
         {
             finalEncounter.EncounterCompleted -= HandleFinalEncounterCompleted;
         }
@@ -75,10 +81,10 @@ public sealed class ExtractionZone : MonoBehaviour
             return;
         }
 
-        Unlock();
+        UnlockExtraction();
     }
 
-    private void Unlock()
+    public void UnlockExtraction()
     {
         if (isUnlocked)
         {

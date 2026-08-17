@@ -5,15 +5,11 @@ using UnityEngine;
 public sealed class ObjectiveHUD : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private RoundProgressManager roundProgressManager;
-    [SerializeField] private ExtractionZone extractionZone;
+    [SerializeField] private ObjectiveManager objectiveManager;
     [SerializeField] private TMP_Text objectiveText;
 
-    [Header("Text")]
-    [SerializeField] private string progressPrefix = "Clear encounters";
-    [SerializeField] private string completedMessage = "Reach the final area";
-    [SerializeField] private string extractionMessage = "Reach the extraction point";
-    [SerializeField] private string extractionCompletedMessage = "Extraction successful";
+    [Header("Formatting")]
+    [SerializeField] private string progressSeparator = ": ";
 
     private void OnEnable()
     {
@@ -22,88 +18,67 @@ public sealed class ObjectiveHUD : MonoBehaviour
             return;
         }
 
-        roundProgressManager.ProgressChanged += HandleProgressChanged;
-        extractionZone.ExtractionUnlocked += HandleExtractionUnlocked;
-        extractionZone.ExtractionCompleted += HandleExtractionCompleted;
-        RefreshCurrentState();
+        objectiveManager.ObjectiveChanged += HandleObjectiveChanged;
+        objectiveManager.ObjectiveCompleted += HandleObjectiveCompleted;
+        objectiveManager.ObjectiveCleared += HandleObjectiveCleared;
+        RefreshCurrentObjective();
     }
 
     private void OnDisable()
     {
-        if (roundProgressManager != null)
-        {
-            roundProgressManager.ProgressChanged -= HandleProgressChanged;
-        }
-
-        if (extractionZone != null)
-        {
-            extractionZone.ExtractionUnlocked -= HandleExtractionUnlocked;
-            extractionZone.ExtractionCompleted -= HandleExtractionCompleted;
-        }
-    }
-
-    private void HandleProgressChanged(int completedCount, int totalCount)
-    {
-        RefreshCurrentState();
-    }
-
-    private void HandleExtractionUnlocked()
-    {
-        objectiveText.text = extractionMessage;
-    }
-
-    private void HandleExtractionCompleted()
-    {
-        objectiveText.text = extractionCompletedMessage;
-    }
-
-    private void RefreshCurrentState()
-    {
-        if (extractionZone.IsCompleted)
-        {
-            objectiveText.text = extractionCompletedMessage;
-            return;
-        }
-
-        if (extractionZone.IsUnlocked)
-        {
-            objectiveText.text = extractionMessage;
-            return;
-        }
-
-        RefreshRoundProgress(
-            roundProgressManager.CompletedCount,
-            roundProgressManager.TotalCount
-        );
-    }
-
-    private void RefreshRoundProgress(int completedCount, int totalCount)
-    {
-        if (objectiveText == null)
+        if (objectiveManager == null)
         {
             return;
         }
 
-        if (totalCount > 0 && completedCount >= totalCount)
+        objectiveManager.ObjectiveChanged -= HandleObjectiveChanged;
+        objectiveManager.ObjectiveCompleted -= HandleObjectiveCompleted;
+        objectiveManager.ObjectiveCleared -= HandleObjectiveCleared;
+    }
+
+    private void HandleObjectiveChanged(ObjectiveState objective)
+    {
+        DisplayObjective(objective);
+    }
+
+    private void HandleObjectiveCompleted(ObjectiveState objective)
+    {
+        DisplayObjective(objective);
+    }
+
+    private void HandleObjectiveCleared()
+    {
+        objectiveText.text = string.Empty;
+    }
+
+    private void RefreshCurrentObjective()
+    {
+        if (!objectiveManager.HasActiveObjective)
         {
-            objectiveText.text = completedMessage;
+            objectiveText.text = string.Empty;
             return;
         }
 
-        objectiveText.text = $"{progressPrefix}: {completedCount}/{totalCount}";
+        DisplayObjective(objectiveManager.CurrentObjective);
+    }
+
+    private void DisplayObjective(ObjectiveState objective)
+    {
+        if (objective == null)
+        {
+            objectiveText.text = string.Empty;
+            return;
+        }
+
+        string progressText = objective.HasProgress ? $"{progressSeparator}{objective.CurrentProgress}/{objective.RequiredProgress}" : string.Empty;
+        objectiveText.text = $"{objective.Title}{progressText}";
     }
 
     private bool HasRequiredReferences()
     {
-        if (roundProgressManager == null)
+        if (objectiveManager == null)
         {
-            Debug.LogError($"{name}: Missing RoundProgressManager.", this);
-            return false;
-        }
-
-        if (extractionZone == null)
-        {
-            Debug.LogError($"{name}: Missing ExtractionZone.", this);
+            Debug.LogError($"{name}: Missing ObjectiveManager.", this);
             return false;
         }
 

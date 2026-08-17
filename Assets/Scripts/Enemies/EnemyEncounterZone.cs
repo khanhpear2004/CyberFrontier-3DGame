@@ -9,9 +9,13 @@ public class EnemyEncounterZone : MonoBehaviour
     [Header("References")]
     [SerializeField] private EnemySpawnManager spawnManager;
     [SerializeField] private Transform spawnPointsRoot;
+    [SerializeField] private Transform guidanceTarget;
 
     [Header("Activation")]
     [SerializeField] private bool activateOnlyOnce = true;
+
+    [Header("Testing")]
+    [SerializeField] private bool suppressEnemySpawning;
 
     private EnemySpawnPoint[] spawnPoints;
     private bool hasActivated;
@@ -21,8 +25,18 @@ public class EnemyEncounterZone : MonoBehaviour
     public int RemainingEnemyCount => aliveEnemies.Count;
     public bool HasActivated => hasActivated;
     public bool IsCompleted => isCompleted;
+    public Transform GuidanceTarget => guidanceTarget != null ? guidanceTarget : transform;
 
+    public event Action<EnemyEncounterZone> EncounterActivated;
     public event Action<EnemyEncounterZone> EncounterCompleted;
+
+    public void SetEnemySpawningSuppressed(bool shouldSuppress)
+    {
+        if (!hasActivated)
+        {
+            suppressEnemySpawning = shouldSuppress;
+        }
+    }
 
     [ContextMenu("Debug/Complete Encounter")]
     public void DebugCompleteEncounter()
@@ -105,6 +119,16 @@ public class EnemyEncounterZone : MonoBehaviour
 
     private void ActivateEncounter()
     {
+        if (suppressEnemySpawning)
+        {
+            hasActivated = true;
+            isCompleted = false;
+            Debug.Log($"{name}: Boss-only test mode. Enemy spawning skipped.", this);
+            EncounterActivated?.Invoke(this);
+            CompleteEncounter();
+            return;
+        }
+
         if (spawnManager == null)
         {
             Debug.LogError($"{name}: Không tìm thấy EnemySpawnManager.", this);
@@ -127,35 +151,32 @@ public class EnemyEncounterZone : MonoBehaviour
         hasActivated = true;
         isCompleted = false;
 
-
         foreach (EnemySpawnPoint spawnPoint in spawnPoints)
         {
             EnemyPoolMember enemySpawn = spawnManager.Spawn(spawnPoint);
 
-            if(enemySpawn == null)
+            if (enemySpawn == null)
             {
                 continue;
             }
 
-            if(enemySpawn != null)
-            {
-                EnemyHealth enemyHealth = enemySpawn.GetComponent<EnemyHealth>();
+            EnemyHealth enemyHealth = enemySpawn.GetComponent<EnemyHealth>();
 
-                if (enemyHealth != null)
-                {
-                    TrackEnemy(enemyHealth);
-                }
+            if (enemyHealth != null)
+            {
+                TrackEnemy(enemyHealth);
             }
         }
 
-        if(aliveEnemies.Count == 0)
+        if (aliveEnemies.Count == 0)
         {
             hasActivated = false;
             return;
         }
 
         Debug.Log($"{name}: Encounter bắt đầu với {aliveEnemies.Count} enemy.", this);
-}
+        EncounterActivated?.Invoke(this);
+    }
 
     private void HandleEnemyDied(EnemyHealth enemyHealth)
     {

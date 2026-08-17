@@ -8,6 +8,7 @@ public class PlayerAimShooter : MonoBehaviour
 
     [Header("Camera & Tâm ngắm")]
     public CinemachineCamera aimCamera;   // AimCamera (Priority nâng lên khi ngắm)
+    [SerializeField] private CinemachineCamera normalCamera;
     public int aimPriority = 20;          // Priority lúc đang ngắm
     public int normalPriority = 0;        // Priority lúc thường
     public GameObject crosshair;          // UI tâm ngắm (bật khi ngắm)
@@ -42,6 +43,12 @@ public class PlayerAimShooter : MonoBehaviour
         if (animator == null) animator = GetComponentInChildren<Animator>();
 
         playerController = GetComponent<PlayerController>();
+
+        if (normalCamera == null && playerController != null)
+        {
+            normalCamera = playerController.cinemachineCamera;
+        }
+
         energy = GetComponent<PlayerEnergy>();
         if (energy == null) energy = FindFirstObjectByType<PlayerEnergy>();
         if (runtimeStats == null)
@@ -89,11 +96,31 @@ public class PlayerAimShooter : MonoBehaviour
 
     void SetAim(bool on)
     {
+        if (on != isAiming)
+        {
+            SynchronizeIncomingCamera(on);
+        }
+
         isAiming = on;
 
         if (aimCamera != null) aimCamera.Priority = on ? aimPriority : normalPriority;
         if (animator != null) animator.SetBool(aimingBool, on);
         if (playerController != null) playerController.SetAiming(on); 
+    }
+
+    private void SynchronizeIncomingCamera(bool enteringAim)
+    {
+        if (viewCamera == null)
+        {
+            return;
+        }
+
+        CinemachineCamera incomingCamera = enteringAim ? aimCamera : normalCamera;
+
+        if (incomingCamera != null)
+        {
+            incomingCamera.ForceCameraPosition(viewCamera.transform.position, viewCamera.transform.rotation);
+        }
     }
 
     bool IsAimCameraLive()

@@ -17,28 +17,15 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField] private RectTransform promptContainer;
     [SerializeField] private InteractionPromptView promptPrefab;
 
-    private readonly Collider[] nearbyColliders =
-        new Collider[32];
+    private readonly Collider[] nearbyColliders = new Collider[32];
 
-    // Ngăn một rương bị thêm nhiều lần nếu có nhiều collider.
-    private readonly HashSet<ChestInteractable> detectedChests =
-        new HashSet<ChestInteractable>();
+    private readonly HashSet<IInteractable> detectedInteractables = new HashSet<IInteractable>();
 
-    // Danh sách được sắp xếp từ gần đến xa.
-    private readonly List<ChestInteractable> nearbyChests =
-        new List<ChestInteractable>();
+    private readonly List<IInteractable> nearbyInteractables = new List<IInteractable>();
 
-    // Ghép mỗi rương với đúng prompt của nó.
-    private readonly Dictionary<
-        ChestInteractable,
-        InteractionPromptView> promptViews =
-        new Dictionary<
-            ChestInteractable,
-            InteractionPromptView>();
+    private readonly Dictionary<IInteractable, InteractionPromptView> promptViews = new Dictionary<IInteractable, InteractionPromptView>();
 
-    // Danh sách tạm để xóa prompt an toàn.
-    private readonly List<ChestInteractable> removalBuffer =
-        new List<ChestInteractable>();
+    private readonly List<IInteractable> removalBuffer = new List<IInteractable>();
 
     private void Update()
     {
@@ -47,16 +34,16 @@ public class PlayerInteractor : MonoBehaviour
             return;
         }
         
-        DetectNearbyChests();
+        DetectNearbyInteractables();
         SynchronizePrompts();
         UpdatePromptList();
         HandleInteraction();
     }
 
-    private void DetectNearbyChests()
+    private void DetectNearbyInteractables()
     {
-        detectedChests.Clear();
-        nearbyChests.Clear();
+        detectedInteractables.Clear();
+        nearbyInteractables.Clear();
 
         int hitCount = Physics.OverlapSphereNonAlloc(
             transform.position,
@@ -69,42 +56,59 @@ public class PlayerInteractor : MonoBehaviour
         {
             Collider hit = nearbyColliders[i];
 
-            if (hit == null ||
-                hit.transform.IsChildOf(transform))
+            if (hit == null || hit.transform.IsChildOf(transform))
             {
                 continue;
             }
 
-            ChestInteractable chest =
-                hit.GetComponentInParent<ChestInteractable>();
+            IInteractable interactable = FindInteractable(hit);
 
-            if (chest == null || !chest.CanInteract)
+            if (!IsInteractableValid(interactable) || !interactable.CanInteract)
             {
                 continue;
             }
 
-            // HashSet.Add trả về true nếu đây là rương mới.
-            if (detectedChests.Add(chest))
+            if (detectedInteractables.Add(interactable))
             {
-                nearbyChests.Add(chest);
+                nearbyInteractables.Add(interactable);
             }
         }
 
-        // Rương gần nhất sẽ nằm ở index 0.
-        nearbyChests.Sort(CompareChestDistance);
+        nearbyInteractables.Sort(CompareInteractableDistance);
     }
 
-    private int CompareChestDistance(
-        ChestInteractable first,
-        ChestInteractable second)
+    private static IInteractable FindInteractable(Collider hit)
     {
-        float firstDistance =
-            (first.transform.position - transform.position)
-            .sqrMagnitude;
+        MonoBehaviour[] behaviours = hit.GetComponentsInParent<MonoBehaviour>();
 
-        float secondDistance =
-            (second.transform.position - transform.position)
-            .sqrMagnitude;
+        foreach (MonoBehaviour behaviour in behaviours)
+        {
+            if (behaviour is IInteractable interactable)
+            {
+                return interactable;
+            }
+        }
+
+        return null;
+    }
+
+    private static bool IsInteractableValid(IInteractable interactable)
+    {
+        if (interactable == null)
+        {
+            return false;
+        }
+
+        UnityEngine.Object unityObject = interactable as UnityEngine.Object;
+
+        return unityObject != null;
+    }
+
+    private int CompareInteractableDistance(IInteractable first, IInteractable second)
+    {
+        float firstDistance = (first.InteractionTransform.position - transform.position).sqrMagnitude;
+
+        float secondDistance = (second.InteractionTransform.position - transform.position).sqrMagnitude;
 
         return firstDistance.CompareTo(secondDistance);
     }
@@ -116,73 +120,56 @@ public class PlayerInteractor : MonoBehaviour
             return;
         }
 
-        // Tạo prompt cho những rương mới đi vào phạm vi.
-        foreach (ChestInteractable chest in nearbyChests)
+        foreach (IInteractable interactable in nearbyInteractables)
         {
-            if (promptViews.ContainsKey(chest))
+            if (promptViews.ContainsKey(interactable))
             {
                 continue;
             }
 
-            InteractionPromptView newPrompt =
-                Instantiate(promptPrefab, promptContainer);
+            InteractionPromptView newPrompt = Instantiate(promptPrefab, promptContainer);
 
             newPrompt.gameObject.SetActive(true);
-            promptViews.Add(chest, newPrompt);
+            promptViews.Add(interactable, newPrompt);
         }
 
-        // Tìm prompt của những rương đã ra khỏi phạm vi.
         removalBuffer.Clear();
 
-        foreach (
-            KeyValuePair<
-                ChestInteractable,
-                InteractionPromptView> pair in promptViews)
+        foreach (KeyValuePair<IInteractable, InteractionPromptView> pair in promptViews)
         {
-            if (pair.Key == null ||
-                !detectedChests.Contains(pair.Key))
+            if (!IsInteractableValid(pair.Key) || !detectedInteractables.Contains(pair.Key))
             {
                 removalBuffer.Add(pair.Key);
             }
         }
 
-        // Xóa sau khi đã duyệt Dictionary xong.
-        foreach (ChestInteractable chest in removalBuffer)
+        foreach (IInteractable interactable in removalBuffer)
         {
-            RemovePrompt(chest);
+            RemovePrompt(interactable);
         }
     }
 
     private void UpdatePromptList()
     {
-        for (int i = 0; i < nearbyChests.Count; i++)
+        for (int i = 0; i < nearbyInteractables.Count; i++)
         {
-            ChestInteractable chest = nearbyChests[i];
+            IInteractable interactable = nearbyInteractables[i];
 
-            if (!promptViews.TryGetValue(
-                    chest,
-                    out InteractionPromptView prompt))
+            if (!promptViews.TryGetValue(interactable, out InteractionPromptView prompt))
             {
                 continue;
             }
 
-           
             prompt.transform.SetSiblingIndex(i);
             bool isSelected = i == 0;
-            string keyLabel = isSelected
-                ? interactionKey.ToString().ToUpper()
-                : string.Empty;
-
-            prompt.SetContent(
-                keyLabel,
-                chest.PromptText,
-                isSelected);
+            string keyLabel = isSelected ? interactionKey.ToString().ToUpper() : string.Empty;
+            prompt.SetContent(keyLabel, interactable.PromptText, isSelected);
         }
     }
 
     private void HandleInteraction()
     {
-        if (nearbyChests.Count == 0)
+        if (nearbyInteractables.Count == 0)
         {
             return;
         }
@@ -192,25 +179,27 @@ public class PlayerInteractor : MonoBehaviour
             return;
         }
 
-        ChestInteractable selectedChest = nearbyChests[0];
+        IInteractable selectedInteractable = nearbyInteractables[0];
 
-        selectedChest.Interact();
-        RemovePrompt(selectedChest);
-
-        detectedChests.Remove(selectedChest);
-        nearbyChests.RemoveAt(0);
-    }
-
-    private void RemovePrompt(ChestInteractable chest)
-    {
-        if (!promptViews.TryGetValue(
-                chest,
-                out InteractionPromptView prompt))
+        if (!IsInteractableValid(selectedInteractable) || !selectedInteractable.CanInteract)
         {
             return;
         }
 
-        promptViews.Remove(chest);
+        selectedInteractable.Interact();
+        RemovePrompt(selectedInteractable);
+        detectedInteractables.Remove(selectedInteractable);
+        nearbyInteractables.RemoveAt(0);
+    }
+
+    private void RemovePrompt(IInteractable interactable)
+    {
+        if (!promptViews.TryGetValue(interactable, out InteractionPromptView prompt))
+        {
+            return;
+        }
+
+        promptViews.Remove(interactable);
 
         if (prompt != null)
         {
@@ -229,8 +218,9 @@ public class PlayerInteractor : MonoBehaviour
         }
 
         promptViews.Clear();
-        detectedChests.Clear();
-        nearbyChests.Clear();
+        detectedInteractables.Clear();
+        nearbyInteractables.Clear();
+        removalBuffer.Clear();
     }
 
     private void OnDrawGizmosSelected()

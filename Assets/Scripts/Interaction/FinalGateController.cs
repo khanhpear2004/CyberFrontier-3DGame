@@ -7,7 +7,7 @@ public sealed class FinalGateController : MonoBehaviour
     [SerializeField] private RoundProgressManager roundProgressManager;
     [SerializeField] private Collider gateBlocker;
     [SerializeField] private GameObject gateVisual;
-    [SerializeField] private Animator gateAnimator;
+    [SerializeField, Tooltip("Optional. Leave empty to hide Gate Visual immediately when the gate opens.")] private Animator gateAnimator;
 
     [Header("Animation")]
     [SerializeField] private string openTriggerName = "Open";

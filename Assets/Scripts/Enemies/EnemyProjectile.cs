@@ -91,14 +91,13 @@ public class EnemyProjectile : MonoBehaviour
 
             transform.position = hit.point;
 
-            IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
+            PlayerHealth playerHealth = hit.collider.GetComponentInParent<PlayerHealth>();
 
-            if (damageable != null)
+            if (playerHealth != null)
             {
-                PlayerHealth playerHealth = hit.collider.GetComponentInParent<PlayerHealth>();
-                bool wasDashAvoided = playerHealth != null && playerHealth.IsDashInvulnerable;
+                bool wasDashAvoided = playerHealth.IsDashInvulnerable;
 
-                damageable.TakeDamage(damage);
+                playerHealth.TakeDamage(damage);
 
                 GameObject impactPrefab = wasDashAvoided && dashAvoidedImpactPrefab != null
                     ? dashAvoidedImpactPrefab
